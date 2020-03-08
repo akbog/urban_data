@@ -1,0 +1,11 @@
+Notes Document (Important Twitter Dataset Information)
+1. If a tweet mentions an individual (e.g. "@jack How could you [...]") this is consider a
+reply to that user, however, as there is not "status" to reply to, the in_reply_to_status_id field is left blank
+2. Extended Tweets have an "extended_tweet" object, which contains a "full_text" attribute
+3. The basic TwitterCorpusReader Object is dated, and is reading in the "text" attribute, but does not check for the
+"full_text" attribute under the "extended_tweet" object
+4.
+
+Notes on REGEX string matches
+1. You must escape . characters, if you are using a * or \ mechanic, because . characters in regex stand for any character
+2. ? Character cannot be referenced unless it is escaped (since ? is a special character that allows for optionality)
