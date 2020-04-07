@@ -27,7 +27,8 @@ from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathP
 from .NewPickleCorpusView import PickleCorpusView
 
 ROOT = r'Twitter-Data'
-DOC_PATTERN = r'[0-2][0-9][0-9][0-9]-[0-3][0-9]-[0-1][0-9]/Manhattan.*\.json\.gz$'
+# DOC_PATTERN = r'[0-2][0-9][0-9][0-9]-[0-3][0-9]-[0-1][0-9]/Manhattan.*\.json\.gz$'
+DOC_PATTERN = r'HPC_Data/streamed_[0-3][0-9]_[0-1][0-9]_[0-9][0-9][0-9][0-9]_[0-9][0-9]_[0-9][0-9]_[0-9][0-9]\.json\.gz$'
 CAT_PATTERN = r'[0-2][0-9][0-9][0-9]-[0-3][0-9]-[0-1][0-9]'
 PKL_PATTERN = r'[0-2][0-9][0-9][0-9]-[0-3][0-9]-[0-1][0-9]/Manhattan.*\.pickle$'
 
@@ -133,18 +134,9 @@ class NewTwitterCorpusReader(CategorizedCorpusReader, CorpusReader):
             return paths
 
     def full_text_tweets(self, fileids = None, categories = None):
-        for tweet in self.docs(fileids, categories):
-            #Entire tweet object is available here
-            # if tweet['truncated']:
-            #     yield tweet['extended_tweet']['full_text']
-            # else:
-            #     yield tweet['text']
-            """
-            Here, we can add utility for cleaning the tweets
-            of useless data, so as to clear up and better utilize
-            size and imports
-            """
-            yield tweet
+        for doc in self.docs(fileids, categories):
+            for tweet in doc:
+                yield json.loads(tweet)
 
     def _read_tweets(self, stream):
         tweets = []
@@ -154,11 +146,32 @@ class NewTwitterCorpusReader(CategorizedCorpusReader, CorpusReader):
                 return tweets
             tweet = json.loads(line)
             tweets.append(tweet)
-        # print("HERE \n")
-        # print(tweets[0])
-        # print(type(tweets[0]))
-        # print("HERE \n")
         return tweets
+
+    def update_data_dictionary(self, dict_path, fileids = None, categories = None):
+        if not os.path.isfile(dict_path):
+            print("Initializing Dictionary")
+            self.build_data_dictionary(dict_path)
+        """Opening Dictionary"""
+        with open(dict_path, 'rb') as handle:
+            ids = pickle.load(handle)
+        for tweet in self.full_text_tweets(fileids, categories):
+            try:
+                ids[tweet["id"]] += 1
+            except:
+                try:
+                    ids[tweet["id"]] = 1
+                except:
+                    """the tweet has no id field""" #This is usually a result of rate limitting
+                    continue
+        with open(dict_path, 'wb') as handle:
+            pickle.dump(ids, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        print("Finished. There are {} duplicates".format(sum(ids.values()) - len(ids)))
+
+    def build_data_dictionary(self, path):
+        build_dict = {}
+        with open(path, 'wb') as handle:
+            pickle.dump(build_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 class NewTwitterPickledCorpusReader(CategorizedCorpusReader, CorpusReader):
 

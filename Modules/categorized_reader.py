@@ -40,6 +40,8 @@ class CategorizedCorpusReader(object):
 
         if self._pattern is not None:
             for file_id in self._fileids:
+                # print(file_id)
+                # print(self._pattern)
                 category = re.match(self._pattern, file_id).group(0)
                 self._add(file_id, category)
 
@@ -93,6 +95,8 @@ class CategorizedCorpusReader(object):
             """
             matches = []
             for cat in self._c2f:
+                # print(categories)
+                # print(cat)
                 if re.match(categories, cat):
                     matches.append(cat)
             if len(matches):
