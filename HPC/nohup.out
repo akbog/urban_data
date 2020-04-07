@@ -1,0 +1,4 @@
+  File "tweepy_streamer.py", line 54
+    twitter_streamer.stream_tweets(output = output_directory, fetched_tweets_filename, key_words = key_words)
+                                                             ^
+SyntaxError: positional argument follows keyword argument

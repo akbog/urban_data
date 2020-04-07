@@ -1,0 +1,5 @@
+#Twitter Credentials for Application
+API_KEY = "hLl57faSpfGXJDlylSTs5vonc"
+API_KEY_SECRET = "hPD02bh9r29QdkCaGoaIB03zLnB0xIWynUrGsE5luBDgE2TYIf"
+API_TOKEN = "164421986-ZM5KYE599bQwI0lS99YNbQ7jr5OjFpycyk6XiXVg"
+API_TOKEN_SECRET = "GkOktV8eQelXAVxLTh6tktIggmL0bo1q2lKtYJfkxENHB"
