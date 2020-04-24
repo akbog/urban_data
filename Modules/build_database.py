@@ -38,4 +38,4 @@ if __name__ == "__main__":
     corpus = NewTwitterCorpusReader(root = root, fileids = DOC_PATTERN, cat_pattern = CAT_PATTERN)
     database = TwitterDatabase(corpus, database_url)
     updating = database.update_database(file_url = 'tweet_list.pkl')
-    len(list(updating))
+    print(len(list(updating)))
