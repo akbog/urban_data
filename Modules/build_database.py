@@ -5,7 +5,6 @@ from TwitterDatabase import TwitterDatabase
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from models import *
-from RedditScore.redditscore.tokenizer import CrazyTokenizer
 import pandas as pd
 import numpy as np
 import pickle
