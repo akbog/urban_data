@@ -199,15 +199,16 @@ class TwitterDatabase(object):
             while(len(files)):
                 count += 1
                 print("reached here")
-                try:
-                    file_name = files.pop()
-                    print("Adding File: {} ".format(file_name), end = "")
-                    yield self.add_file(file_name)
-                    print("(Completed)")
-                except:
-                    with open("tweet_list.pkl", "wb") as write:
-                        pickle.dump(files, write)
-                    print("Uploaded {} Files Before Unplanned Exit".format(count))
+                file_name = files.pop()
+                # try:
+                print("Adding File: {} ".format(file_name), end = "")
+                yield self.add_file(file_name)
+                print("(Completed)")
+                # except:
+                files.append(file_name)
+                with open("tweet_list.pkl", "wb") as write:
+                    pickle.dump(files, write)
+                print("Uploaded {} Files Before Unplanned Exit".format(count))
         else:
             for fileid in self.fileids(fileids, categories):
                 yield self.add_file(fileid)
