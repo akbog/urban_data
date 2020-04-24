@@ -200,20 +200,20 @@ class TwitterDatabase(object):
             for fileid in self.fileids(fileids, categories):
                 yield self.add_file(fileid)
 
+def save_file(file_name, ordered_dict):
+    with open(file_name, "wb") as write:
+        pickle.dump(ordered_dict, write)
+
 class ParallelTwitterDatabase(TwitterDatabase):
 
     def __init__(self, *args, **kwargs):
         self.tasks = mp.cpu_count()
-        atexit.register(self.save_file)
+        atexit.register(save_file, self.file_url, self.ordered_dict)
         super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
 
     def on_result(self, result):
         print("Added File: ", result, " (COMPLETED)")
         del self.ordered_dict[result]
-
-    def save_file(self):
-        with open(self.file_url, "wb") as write:
-            pickle.dump(self.ordered_dict, write)
 
     def update_database(self):
         pool = mp.Pool(processes = self.tasks)
