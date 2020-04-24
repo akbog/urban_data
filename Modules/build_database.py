@@ -1,7 +1,7 @@
 #So, I think I should build the database, without location built in
 #Then, cycle through and build the database with locations
 from TwitterReader import NewTwitterCorpusReader
-from TwitterDatabase import TwitterDatabase
+from TwitterDatabase import ParallelTwitterDatabase
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from models import *
