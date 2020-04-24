@@ -165,24 +165,19 @@ class TwitterDatabase(object):
 
     def commit_inserts(self):
         self.engine.execute(
-           Users.__table__.insert().prefix_with('IGNORE'),
-           self.users_lst
+           Users.__table__.insert().values(self.users_lst).on_duplicate_key_update()
         )
         self.engine.execute(
-           Tweets.__table__.insert().prefix_with('IGNORE'),
-           self.tweets_lst
+           Tweets.__table__.insert().values(self.tweets_lst).on_duplicate_key_update()
         )
         self.engine.execute(
-           Entity.__table__.insert().prefix_with('IGNORE'),
-           self.entity_lst
+           Entity.__table__.insert().values(self.entity_lst).on_duplicate_key_update()
         )
         self.engine.execute(
-           Geo.__table__.insert().prefix_with('IGNORE'),
-           self.geo_lst
+           Geo.__table__.insert().values(self.geo_lst).on_duplicate_key_update()
         )
         self.engine.execute(
-           Place.__table__.insert().prefix_with('IGNORE'),
-           self.place_lst
+           Place.__table__.insert().values(self.place_lst).on_duplicate_key_update()
         )
 
     def add_file(self, fileid):

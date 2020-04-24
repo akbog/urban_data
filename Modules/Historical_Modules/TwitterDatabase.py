@@ -202,7 +202,7 @@ class TwitterDatabase(object):
                 files = pickle.load(read)
             while(len(files)):
                 count += 1
-                print("reached here")
+                print("reached")
                 try:
                     file_name = files.pop()
                     print("Adding File: {} ".format(file_name), end = "")
