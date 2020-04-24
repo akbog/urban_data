@@ -204,13 +204,13 @@ class ParallelTwitterDatabase(TwitterDatabase):
 
     def __init__(self, *args, **kwargs):
         self.tasks = mp.cpu_count()
+        atexit.register(self.save_file)
         super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
 
     def on_result(self, result):
         print("Added File: ", result, " (COMPLETED)")
         del self.ordered_dict[result]
 
-    @atexit.register
     def save_file(self):
         with open(self.file_url, "wb") as write:
             pickle.dump(self.ordered_dict, write)
@@ -218,10 +218,12 @@ class ParallelTwitterDatabase(TwitterDatabase):
     def update_database(self):
         pool = mp.Pool(processes = self.tasks)
         files = [(key, value) for key, value in reversed(ordered_dict.items())]
+        print("Initializing Pool")
         tasks = [
             pool.apply_async(self.add_file, (fileid,), callback = self.on_result)
             for file_key, file_id in files
         ]
         pool.close()
+        print("Starting Pool")
         pool.join()
         return len(self.ordered_dict)
