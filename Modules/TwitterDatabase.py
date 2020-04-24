@@ -206,12 +206,14 @@ class ParallelTwitterDatabase(TwitterDatabase):
         self.tasks = mp.cpu_count()
         self.results = []
         super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
-        atexit.register(save_file, self.file_url, self.ordered_dict)
+        # atexit.register(save_file, self.file_url, self.ordered_dict)
 
-    def on_result(self, result):
+    def on_result(self, file_key):
         print("Added File: ", result, " (COMPLETED)")
-        del self.ordered_dict[result]
-        self.results.append(result)
+        del self.ordered_dict[file_key]
+        def inner(result):
+            self.results.append(result)
+        return inner
 
     def update_database(self):
         pool = mp.Pool(processes = self.tasks)
@@ -219,7 +221,7 @@ class ParallelTwitterDatabase(TwitterDatabase):
         print(len(files))
         print("Initializing Pool")
         tasks = [
-            pool.apply_async(self.add_file, (fileid,), callback = self.on_result)
+            pool.apply_async(self.add_file, (fileid,), callback = self.on_result(file_key))
             for file_key, fileid in files
         ]
         print(len(tasks))
