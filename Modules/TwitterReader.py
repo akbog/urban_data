@@ -24,7 +24,7 @@ from nltk.tokenize import TweetTokenizer
 
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
 
-from .NewPickleCorpusView import PickleCorpusView
+from NewPickleCorpusView import PickleCorpusView
 
 ROOT = r'Twitter-Data'
 # DOC_PATTERN = r'[0-2][0-9][0-9][0-9]-[0-3][0-9]-[0-1][0-9]/Manhattan.*\.json\.gz$'
