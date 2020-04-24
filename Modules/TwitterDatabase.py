@@ -7,6 +7,7 @@ import json
 import operator
 from collections import OrderedDict
 import multiprocessing as mp
+import atexit
 
 from tqdm import tqdm
 from langdetect import detect
@@ -20,11 +21,17 @@ import sqlalchemy as db
 from models import *
 
 class TwitterDatabase(object):
-    def __init__(self, corpus, database_url, **kwargs):
+    def __init__(self, corpus, database_url, dict_url = None, **kwargs):
         self.corpus = corpus #Here we specify fileids so that we don't have to do the entire corpus at once
         self.engine = db.create_engine(database_url)
         self.make_session = sessionmaker(self.engine)
         self.session = self.make_session()
+        self.file_url = dict_url
+        if file_url:
+            with open(file_url "rb") as read:
+                self.ordered_dict = pickle.load(read)
+        else:
+            self.ordered_dict = None
 
 
     def initialize(self):
@@ -167,13 +174,12 @@ class TwitterDatabase(object):
     def add_file(self, fileid):
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
+        return fileid
 
-    def update_database(self, fileids = None, categories = None, file_url = None):
-        if file_url:
+    def update_database(self, fileids = None, categories = None):
+        if self.file_url:
             count = 0
-            with open(file_url, "rb") as read:
-                ordered_dict = pickle.load(read)
-            files = [(key, value) for key, value in reversed(ordered_dict.items())]
+            files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
             print("Inserting Tweets")
             while(len(files)):
                 count += 1
@@ -192,3 +198,28 @@ class TwitterDatabase(object):
         else:
             for fileid in self.fileids(fileids, categories):
                 yield self.add_file(fileid)
+
+class ParallelTwitterDatabase(TwitterDatabase):
+
+    def __init__(self, *args, **kwargs):
+        self.tasks = mp.cpu_count()
+        super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
+
+    def on_result(self, result):
+        del self.ordered_dict[result]
+
+    @atexit.register
+    def save_file():
+        with open(self.file_url, "wb") as write:
+            pickle.dump(self.ordered_dict, write)
+
+    def update_database(self, fileids = None, categories = None):
+        pool = mp.Pool(processes = self.tasks)
+        files = [(key, value) for key, value in reversed(ordered_dict.items())]
+        tasks = [
+            pool.apply_async(self.add_file, (fileid,), callback = self.on_result)
+            for file_key, file_id in files
+        ]
+        pool.close()
+        pool.join()
+        return len(self.ordered_dict)
