@@ -1,0 +1,53 @@
+[[source]]
+verify_ssl = true
+url = "https://pypi.python.org/simple"
+name = "pypi"
+
+[packages]
+pandas = "*"
+nltk = "*"
+scikit-learn = "*"
+tensorflow = "*"
+tensorflow-gpu = "*"
+numpy = "*"
+requests = "*"
+tldextract = "*"
+Keras = "*"
+matplotlib = "*"
+"beautifulsoup4" = "*"
+Emojipedia = "*"
+spacy = "*"
+lxml = "*"
+line_profiler = "*"
+pandas-gbq = "*"
+adjusttext = "*"
+scipy = "*"
+gensim = "*"
+tweepy = "*"
+selenium = "*"
+eventlet = "*"
+yapf = "*"
+seaborn = "*"
+torch = "*"
+torchvision = "*"
+
+[requires]
+python_version = "3.5"
+
+[dev-packages]
+jupyter = "*"
+"flake8" = "*"
+"autopep8" = "*"
+sphinxcontrib-napoleon = "*"
+pytest = "*"
+isort = "*"
+Sphinx = "*"
+sphinx_rtd_theme = "*"
+pytest-cov = "*"
+line-profiler = "*"
+pycallgraph = "*"
+tqdm = "*"
+seaborn = "*"
+jupyterthemes = "*"
+rise = "*"
+"e1839a8" = {path = ".", editable = true}
