@@ -209,9 +209,9 @@ class ParallelTwitterDatabase(TwitterDatabase):
         # atexit.register(save_file, self.file_url, self.ordered_dict)
 
     def on_result(self, file_key):
-        print("Added File: ", result, " (COMPLETED)")
         del self.ordered_dict[file_key]
         def inner(result):
+            print("Added File: ", result, " (COMPLETED)")
             self.results.append(result)
         return inner
 
