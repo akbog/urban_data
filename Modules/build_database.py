@@ -34,8 +34,8 @@ if __name__ == "__main__":
         file_path = sys.argv[1]
         print("Num Files in Dir: ", len(os.listdir(file_path)))
         ###Problem exists here
-        print(os.path.join(CAT_PATTERN, os.listdir(file_path)[0]))
-        files = [os.path.join(CAT_PATTERN, f) for f in os.listdir(file_path) if re.match(DOC_PATTERN, os.path.join("Tweets",f))]
+        print(os.path.join("Tweets", os.listdir(file_path)[0]))
+        files = [os.path.join(CAT_PATTERN, f) for f in os.listdir(file_path) if re.match(DOC_PATTERN, str(os.path.join("Tweets",f)))]
         print(len(files))
         with open("tweet_list.pkl", "wb") as write:
             pickle.dump(files, write)
