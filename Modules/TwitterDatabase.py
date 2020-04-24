@@ -207,6 +207,7 @@ class ParallelTwitterDatabase(TwitterDatabase):
         super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
 
     def on_result(self, result):
+        print("Added File: ", result, " (COMPLETED)")
         del self.ordered_dict[result]
 
     @atexit.register
