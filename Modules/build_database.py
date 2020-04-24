@@ -1,11 +1,11 @@
 #So, I think I should build the database, without location built in
 #Then, cycle through and build the database with locations
-from .Modules.TwitterReader import NewTwitterCorpusReader
-from .Modules.TwtterDatabase import TwitterDatabase
+from Modules.TwitterReader import NewTwitterCorpusReader
+from Modules.TwtterDatabase import TwitterDatabase
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-from .Modules.models import *
-from .Modules.RedditScore.redditscore.tokenizer import CrazyTokenizer
+from Modules.models import *
+from Modules.RedditScore.redditscore.tokenizer import CrazyTokenizer
 import pandas as pd
 import numpy as np
 import pickle
