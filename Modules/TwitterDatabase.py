@@ -4,6 +4,8 @@ import shutil
 import pickle
 import multiprocessing as mp
 import json
+import operator
+from collections import OrderedDict
 
 from tqdm import tqdm
 from langdetect import detect
@@ -79,7 +81,6 @@ class TwitterDatabase(object):
            Tweet.__table__.insert(),
            [new_tweet.__dict__]
         )
-        print("Added Tweet")
         # self.session.add(new_tweet)
         # self.session.commit()
 
@@ -158,25 +159,6 @@ class TwitterDatabase(object):
             self.add_place(tweet["id"], json.dumps(tweet["place"]))
         # self.session.commit()
 
-    # def to_datetime(self, datestring):
-    #     time_tuple = parsedate_tz(datestring.strip())
-    #     dt = datetime(*time_tuple[:6])
-    #     return dt - timedelta(seconds = time_tuple[-1])
-
-    # def update_values(self, tweet):
-    #     tweet_old = self.session.query(Tweet).filter_by(id = tweet["id"]).first()
-    #     if tweet_old.created < self.to_datetime(tweet["created_at"]):
-    #         self.session.delete(tweet_old)
-    #         self.session.commit()
-    #         self.add_all(tweet)
-
-    # def checkTweetID(self, tweet):
-    #     if self.session.query(Tweet).filter_by(id = tweet["id"]).first():
-    #         self.update_values(tweet)
-    #     else:
-    #         self.add_all(tweet)
-    #     self.add_all(tweet)
-
     def process(self, tweet):
         if not "id" in tweet:
             return
@@ -186,52 +168,31 @@ class TwitterDatabase(object):
         if "quoted_status" in tweet:
             self.process(tweet["quoted_status"])
 
-    def commit_inserts(self):
-        self.engine.execute(
-           Users.__table__.insert(),
-           self.users_lst
-        )
-        self.engine.execute(
-           Tweet.__table__.insert(),
-           self.tweets_lst
-        )
-        self.engine.execute(
-           Entity.__table__.insert(),
-           self.entity_lst
-        )
-        self.engine.execute(
-           Geo.__table__.insert(),
-           self.geo_lst
-        )
-        self.engine.execute(
-           Place.__table__.insert(),
-           self.place_lst
-        )
-
     def add_file(self, fileid):
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
-        # self.commit_inserts()
-            #Here is the part where you finish by uploading in bulk through core
 
     def update_database(self, fileids = None, categories = None, file_url = None):
         if file_url:
             count = 0
             with open(file_url, "rb") as read:
-                files = pickle.load(read)
+                ordered_dict = pickle.load(read)
+            files = [(key, value) for key, value in reversed(ordered_dict.items())]
+            print("Inserting Tweets")
             while(len(files)):
                 count += 1
-                print("reached here")
-                file_name = files.pop()
-                # try:
-                print("Adding File: {} ".format(file_name), end = "")
-                yield self.add_file(file_name)
-                print("(Completed)")
-                # except:
-                files.append(file_name)
-                with open("tweet_list.pkl", "wb") as write:
-                    pickle.dump(files, write)
-                print("Uploaded {} Files Before Unplanned Exit".format(count))
+                file_key, file_name = files.pop()
+                try:
+                    print("Adding File: {} ".format(file_name), end = " ")
+                    yield self.add_file(file_name)
+                    print("(Completed)")
+                except:
+                    print("Unexpected Error:", sys.exc_info()[0])
+                    with open(file_url, "wb") as write:
+                        pickle.dump(ordered_dict, write)
+                    print("Uploaded {} Files Before Unplanned Exit".format(count))
+                    continue
+                del ordered_dict[file_key]
         else:
             for fileid in self.fileids(fileids, categories):
                 yield self.add_file(fileid)
