@@ -51,8 +51,6 @@ class TwitterDatabase(object):
             return "00"
 
     def add_tweet(self, tweet):
-        if self.session.query(Tweet).filter_by(id = tweet["id"]).first():
-            return
         new_tweet = Tweet(
             id = tweet["id"],
             user_id = tweet["user"]["id"],
@@ -149,6 +147,8 @@ class TwitterDatabase(object):
         # self.session.add(new_place)
 
     def add_all(self, tweet):
+        if self.session.query(Tweet).filter_by(id = tweet["id"]).first():
+            return
         self.add_user(tweet["user"])
         self.add_tweet(tweet)
         self.add_entities(tweet["id"], json.dumps(tweet["entities"]))
