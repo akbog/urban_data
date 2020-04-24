@@ -157,21 +157,23 @@ class TwitterDatabase(object):
             self.add_geo(tweet["id"], json.dumps(tweet["coordinates"]))
         if tweet["place"]:
             self.add_place(tweet["id"], json.dumps(tweet["place"]))
-        # self.session.commit()
+        return tweet["id"]
 
     def process(self, tweet):
         if not "id" in tweet:
             return
-        self.add_all(tweet)
         if "retweeted_status" in tweet:
             self.process(tweet["retweeted_status"])
         if "quoted_status" in tweet:
             self.process(tweet["quoted_status"])
+        return self.add_all(tweet)
 
     def add_file(self, fileid):
-        for tweet in self.corpus.full_text_tweets(fileids = fileid):
-            yield self.process(tweet)
-        return fileid
+        all_tweets = [
+            self.process(tweet)
+            for tweet in self.corpus.full_text_tweets(fileids = fileid)
+        ]
+        return len(all_tweets)
 
     def update_database(self, fileids = None, categories = None):
         if self.file_url:
@@ -207,8 +209,8 @@ class ParallelTwitterDatabase(TwitterDatabase):
         super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
         # atexit.register(save_file, self.file_url, self.ordered_dict)
 
-    def on_result(self, file_key):
-        del self.ordered_dict[file_key]
+    def on_result(self, result):
+        # del self.ordered_dict[result]
         def inner(result):
             print("Added File: ", result, " (COMPLETED)")
             self.results.append(result)
@@ -220,7 +222,7 @@ class ParallelTwitterDatabase(TwitterDatabase):
         pool = mp.Pool(processes = self.tasks)
         files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
         tasks = [
-            pool.apply_async(self.add_file(fileid), callback = self.on_result(file_key))
+            pool.apply_async(self.add_file(fileid), callback = self.on_result)
             for file_key, fileid in files
         ]
         print("Finished Building Tasks")
