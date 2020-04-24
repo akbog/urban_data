@@ -7,8 +7,8 @@ import json
 
 from tqdm import tqdm
 from langdetect import detect
-from postal.expand import expand_address
-from postal.parser import parse_address
+# from postal.expand import expand_address
+# from postal.parser import parse_address
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime, timedelta
 from email.utils import parsedate_tz
@@ -45,44 +45,44 @@ class TwitterDatabase(object):
             return "00"
 
 
-    def locDict(self, loc_array):
-        """
-            Function is Depracated
-            Replaced by Nominatim Geocoding Raw String
-        """
-        loc_dict = {"suburb" : None,
-                    "city_district" : None,
-                    "city" : None,
-                    "state_district" : None,
-                    "state" : None,
-                    "country_region" : None,
-                    "country" : None,
-                    "world_region" : None}
-        for parse in loc_array:
-            loc_dict[parse[1]] = parse[0]
-        return loc_dict
+    # def locDict(self, loc_array):
+    #     """
+    #         Function is Depracated
+    #         Replaced by Nominatim Geocoding Raw String
+    #     """
+    #     loc_dict = {"suburb" : None,
+    #                 "city_district" : None,
+    #                 "city" : None,
+    #                 "state_district" : None,
+    #                 "state" : None,
+    #                 "country_region" : None,
+    #                 "country" : None,
+    #                 "world_region" : None}
+    #     for parse in loc_array:
+    #         loc_dict[parse[1]] = parse[0]
+    #     return loc_dict
 
-    def addUserLocation(self, row, tweet):
-        """
-            Function is Depracated
-            Replaced by Nominatim Geocoding Raw String
-        """
-        if not tweet["location"]:
-            return
-        loc_dict = self.locDict(parse_address(tweet["location"]))
-        new_location = Location(
-            user_id = row.user_id,
-            suburb = loc_dict["suburb"],
-            city_dist = loc_dict["city_district"],
-            city = loc_dict["city"],
-            state_dist = loc_dict["state_district"],
-            state = loc_dict["state"],
-            region_cn = loc_dict["country_region"],
-            country = loc_dict["country"],
-            region_wd = loc_dict["world_region"]
-        )
-        self.session.add(new_location)
-        self.session.commit()
+    # def addUserLocation(self, row, tweet):
+    #     """
+    #         Function is Depracated
+    #         Replaced by Nominatim Geocoding Raw String
+    #     """
+    #     if not tweet["location"]:
+    #         return
+    #     loc_dict = self.locDict(parse_address(tweet["location"]))
+    #     new_location = Location(
+    #         user_id = row.user_id,
+    #         suburb = loc_dict["suburb"],
+    #         city_dist = loc_dict["city_district"],
+    #         city = loc_dict["city"],
+    #         state_dist = loc_dict["state_district"],
+    #         state = loc_dict["state"],
+    #         region_cn = loc_dict["country_region"],
+    #         country = loc_dict["country"],
+    #         region_wd = loc_dict["world_region"]
+    #     )
+    #     self.session.add(new_location)
+    #     self.session.commit()
 
     def add_tweet(self, tweet):
         new_tweet = Tweet(
@@ -131,7 +131,7 @@ class TwitterDatabase(object):
             new_user.located = tweet["location"]
         self.session.add(new_user)
         self.session.commit()
-        self.addUserLocation(new_user, tweet)
+        # self.addUserLocation(new_user, tweet)
 
     def add_entities(self, id, tweet_ent):
         new_entity = Entity(
