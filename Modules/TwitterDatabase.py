@@ -7,17 +7,18 @@ import json
 
 from tqdm import tqdm
 from langdetect import detect
-from .java_tweet_tokenizer import *
-from sqlalchemy.orm import sessionmaker
-import sqlalchemy as db
 from postal.expand import expand_address
 from postal.parser import parse_address
+from sqlalchemy.orm import sessionmaker
+from datetime import datetime, timedelta
+from email.utils import parsedate_tz
+import sqlalchemy as db
 
 from .models import *
 
 class TwitterDatabase(object):
     def __init__(self, corpus, database_url, **kwargs):
-        self.corpus = corpus
+        self.corpus = corpus #Here we specify fileids so that we don't have to do the entire corpus at once
         self.engine = db.create_engine(database_url)
         self.make_session = sessionmaker(self.engine)
         self.session = self.make_session()
@@ -45,6 +46,10 @@ class TwitterDatabase(object):
 
 
     def locDict(self, loc_array):
+        """
+            Function is Depracated
+            Replaced by Nominatim Geocoding Raw String
+        """
         loc_dict = {"suburb" : None,
                     "city_district" : None,
                     "city" : None,
@@ -58,6 +63,10 @@ class TwitterDatabase(object):
         return loc_dict
 
     def addUserLocation(self, row, tweet):
+        """
+            Function is Depracated
+            Replaced by Nominatim Geocoding Raw String
+        """
         if not tweet["location"]:
             return
         loc_dict = self.locDict(parse_address(tweet["location"]))
@@ -86,14 +95,18 @@ class TwitterDatabase(object):
             retweet_count = tweet["retweet_count"],
             favorite_count = tweet["favorite_count"]
         )
-        if tweet["truncated"]:
+        if "retweeted_status" in tweet:
+            if "extended_tweet" in tweet["retweeted_status"]:
+                new_tweet.full_text = tweet["retweeted_status"]["extended_tweet"]["full_text"]
+            else:
+                new_tweet.full_text = tweet["retweeted_status"]["text"]
+            new_tweet.retweet_id = tweet["retweeted_status"]["id"]
+        elif "extended_tweet" in tweet:
             new_tweet.full_text = tweet["extended_tweet"]["full_text"]
         else:
             new_tweet.full_text = tweet['text']
-        try:
-            new_tweet.quote_id = tweet["quoted_status_id"]
-        except:
-            pass
+        if "quoted_status" in tweet:
+            new_tweet.quote_id = tweet["quoted_status"]["id"]
         new_tweet.language = self.getLanguage(new_tweet.full_text)
         self.session.add(new_tweet)
         self.session.commit()
@@ -114,6 +127,8 @@ class TwitterDatabase(object):
             num_favourites = tweet["favourites_count"],
             num_tweets = tweet["statuses_count"]
         )
+        if tweet["location"]:
+            new_user.located = tweet["location"]
         self.session.add(new_user)
         self.session.commit()
         self.addUserLocation(new_user, tweet)
@@ -139,23 +154,46 @@ class TwitterDatabase(object):
         )
         self.session.add(new_place)
 
+    def add_all(self, tweet):
+        self.add_user(tweet["user"])
+        self.add_tweet(tweet)
+        self.add_entities(tweet["id"], json.dumps(tweet["entities"]))
+        if tweet["coordinates"]:
+            self.add_geo(tweet["id"], json.dumps(tweet["coordinates"]))
+        if tweet["place"]:
+            self.add_place(tweet["id"], json.dumps(tweet["place"]))
+        self.session.commit()
+
+    def to_datetime(self, datestring):
+        time_tuple = parsedate_tz(datestring.strip())
+        dt = datetime(*time_tuple[:6])
+        return dt - timedelta(seconds = time_tuple[-1])
+
+    def update_values(self, tweet):
+        tweet_old = self.session.query(Tweet).filter_by(id = tweet["id"]).first()
+        if tweet_old.created < self.to_datetime(tweet["created_at"]):
+            self.session.delete(tweet_old)
+            self.session.commit()
+            self.add_all(tweet)
+
+    def checkTweetID(self, tweet):
+        if self.session.query(Tweet).filter_by(id = tweet["id"]).first():
+            self.update_values(tweet)
+        else:
+            self.add_all(tweet)
+
+    def process(self, tweet):
+        if not "id" in tweet:
+            return
+        self.checkTweetID(tweet)
+        if "retweeted_status" in tweet:
+            self.process(tweet["retweeted_status"])
+        if "quoted_status" in tweet:
+            self.process(tweet["quoted_status"])
+
     def add_file(self, fileid):
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
-            try:
-                tweet["id"]
-            except:
-                continue
-            if self.session.query(Tweet).filter_by(id = tweet["id"]).first():
-                continue
-            self.add_user(tweet["user"])
-            self.add_tweet(tweet)
-            self.add_entities(tweet["id"], json.dumps(tweet["entities"]))
-            if tweet["coordinates"]:
-                self.add_geo(tweet["id"], json.dumps(tweet["coordinates"]))
-            if tweet["place"]:
-                self.add_place(tweet["id"], json.dumps(tweet["place"]))
-            self.session.commit()
-
+            self.process(tweet)
 
     def update_database(self, fileids = None, categories = None):
         for fileid in self.fileids(fileids, categories):
