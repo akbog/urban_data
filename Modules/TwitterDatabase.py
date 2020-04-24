@@ -165,23 +165,23 @@ class TwitterDatabase(object):
 
     def commit_inserts(self):
         self.engine.execute(
-           Users.__table__.insert(),
+           Users.__table__.insert().prefix_with('IGNORE'),
            self.users_lst
         )
         self.engine.execute(
-           Tweets.__table__.insert(),
+           Tweets.__table__.insert().prefix_with('IGNORE'),
            self.tweets_lst
         )
         self.engine.execute(
-           Entity.__table__.insert(),
+           Entity.__table__.insert().prefix_with('IGNORE'),
            self.entity_lst
         )
         self.engine.execute(
-           Geo.__table__.insert(),
+           Geo.__table__.insert().prefix_with('IGNORE'),
            self.geo_lst
         )
         self.engine.execute(
-           Place.__table__.insert(),
+           Place.__table__.insert().prefix_with('IGNORE'),
            self.place_lst
         )
 
