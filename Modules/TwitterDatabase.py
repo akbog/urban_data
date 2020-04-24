@@ -210,7 +210,7 @@ class ParallelTwitterDatabase(TwitterDatabase):
         del self.ordered_dict[result]
 
     @atexit.register
-    def save_file():
+    def save_file(self):
         with open(self.file_url, "wb") as write:
             pickle.dump(self.ordered_dict, write)
 
