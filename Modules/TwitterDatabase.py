@@ -195,6 +195,22 @@ class TwitterDatabase(object):
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
 
-    def update_database(self, fileids = None, categories = None):
-        for fileid in self.fileids(fileids, categories):
-            yield self.add_file(fileid)
+    def update_database(self, fileids = None, categories = None, file_url = None):
+        if file_url:
+            count = 0
+            with open(file_url, "rb") as read:
+                files = pickle.load(read)
+            while(len(files)):
+                count += 1
+                try:
+                    file_name = files.pop()
+                    print("Adding File: {} ".format(file_name), end = "")
+                    yield self.add_file(file_name)
+                    print("(Completed)")
+                except:
+                    with open("tweet_list.pkl", "wb") as write:
+                        pickle.dump(files, write)
+                    print("Uploaded {} Files Before Unplanned Exit".format(count))
+        else:
+            for fileid in self.fileids(fileids, categories):
+                yield self.add_file(fileid)
