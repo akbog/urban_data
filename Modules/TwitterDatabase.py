@@ -217,11 +217,11 @@ class ParallelTwitterDatabase(TwitterDatabase):
 
     def update_database(self):
         pool = mp.Pool(processes = self.tasks)
-        files = [(key, value) for key, value in reversed(ordered_dict.items())]
+        files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
         print("Initializing Pool")
         tasks = [
             pool.apply_async(self.add_file, (fileid,), callback = self.on_result)
-            for file_key, file_id in files
+            for file_key, fileid in files
         ]
         pool.close()
         print("Starting Pool")
