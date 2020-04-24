@@ -28,12 +28,8 @@ class TwitterDatabase(object):
         self.make_session = sessionmaker(self.engine)
         self.session = self.make_session()
         self.file_url = dict_url
-        if self.file_url:
-            with open(self.file_url, "rb") as read:
-                self.ordered_dict = pickle.load(read)
-        else:
-            self.ordered_dict = None
-
+        with open(self.file_url, "rb") as read:
+            self.ordered_dict = pickle.load(read)
 
     def initialize(self):
         Base.metadata.create_all(self.engine)
@@ -220,11 +216,13 @@ class ParallelTwitterDatabase(TwitterDatabase):
     def update_database(self):
         pool = mp.Pool(processes = self.tasks)
         files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
+        print(len(files))
         print("Initializing Pool")
         tasks = [
             pool.apply_async(self.add_file, (fileid,), callback = self.on_result)
             for file_key, fileid in files
         ]
+        print(len(tasks))
         pool.close()
         print("Starting Pool")
         pool.join()
