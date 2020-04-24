@@ -28,8 +28,8 @@ class TwitterDatabase(object):
         self.make_session = sessionmaker(self.engine)
         self.session = self.make_session()
         self.file_url = dict_url
-        if file_url:
-            with open(file_url, "rb") as read:
+        if self.file_url:
+            with open(self.file_url, "rb") as read:
                 self.ordered_dict = pickle.load(read)
         else:
             self.ordered_dict = None
