@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 from email.utils import parsedate_tz
 import sqlalchemy as db
 
-from .models import *
+from models import *
 
 class TwitterDatabase(object):
     def __init__(self, corpus, database_url, **kwargs):
