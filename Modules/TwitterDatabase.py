@@ -8,6 +8,7 @@ import operator
 from collections import OrderedDict
 import multiprocessing as mp
 import atexit
+import sys
 
 from tqdm import tqdm
 from langdetect import detect
@@ -213,7 +214,7 @@ class ParallelTwitterDatabase(TwitterDatabase):
         with open(self.file_url, "wb") as write:
             pickle.dump(self.ordered_dict, write)
 
-    def update_database(self, fileids = None, categories = None):
+    def update_database(self):
         pool = mp.Pool(processes = self.tasks)
         files = [(key, value) for key, value in reversed(ordered_dict.items())]
         tasks = [
