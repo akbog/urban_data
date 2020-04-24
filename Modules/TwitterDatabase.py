@@ -74,7 +74,12 @@ class TwitterDatabase(object):
         if "quoted_status" in tweet:
             new_tweet.quote_id = tweet["quoted_status"]["id"]
         new_tweet.language = self.getLanguage(new_tweet.full_text)
-        self.tweets_lst.append(new_tweet.__dict__)
+        # self.tweets_lst.append(new_tweet.__dict__)
+        self.engine.execute(
+           Tweets.__table__.insert(),
+           [new_tweet.__dict__]
+        )
+
         # self.session.add(new_tweet)
         # self.session.commit()
 
@@ -96,7 +101,11 @@ class TwitterDatabase(object):
         )
         if tweet["location"]:
             new_user.located = tweet["location"]
-        self.users_lst.append(new_user.__dict__)
+        # self.users_lst.append(new_user.__dict__)
+        self.engine.execute(
+           Users.__table__.insert(),
+           [new_user.__dict__]
+        )
         # self.session.add(new_user)
         # self.session.commit()
         # self.addUserLocation(new_user, tweet)
@@ -106,7 +115,11 @@ class TwitterDatabase(object):
             tweet_id = id,
             entities = tweet_ent
         )
-        self.entity_lst.append(new_entity.__dict__)
+        # self.entity_lst.append(new_entity.__dict__)
+        self.engine.execute(
+           Entity.__table__.insert(),
+           [new_entity.__dict__]
+        )
         # self.session.add(new_entity)
 
     def add_geo(self, id, geo_json):
@@ -114,7 +127,11 @@ class TwitterDatabase(object):
             tweet_id = id,
             coordinates = geo_json
         )
-        self.geo_lst.append(new_geo.__dict__)
+        # self.geo_lst.append(new_geo.__dict__)
+        self.engine.execute(
+           Geo.__table__.insert(),
+           [new_geo.__dict__]
+        )
         # self.session.add(new_geo)
 
     def add_place(self, id, place_json):
@@ -122,7 +139,11 @@ class TwitterDatabase(object):
             tweet_id = id,
             places = place_json
         )
-        self.place_lst.append(new_place.__dict__)
+        self.engine.execute(
+           Place.__table__.insert(),
+           [new_place.__dict__]
+        )
+        # self.place_lst.append(new_place.__dict__)
         # self.session.add(new_place)
 
     def add_all(self, tweet):
@@ -165,25 +186,30 @@ class TwitterDatabase(object):
 
     def commit_inserts(self):
         self.engine.execute(
-           Users.__table__.insert().values(self.users_lst).on_duplicate_key_update()
+           Users.__table__.insert(),
+           self.users_lst
         )
         self.engine.execute(
-           Tweets.__table__.insert().values(self.tweets_lst).on_duplicate_key_update()
+           Tweets.__table__.insert(),
+           self.tweets_lst
         )
         self.engine.execute(
-           Entity.__table__.insert().values(self.entity_lst).on_duplicate_key_update()
+           Entity.__table__.insert(),
+           self.entity_lst
         )
         self.engine.execute(
-           Geo.__table__.insert().values(self.geo_lst).on_duplicate_key_update()
+           Geo.__table__.insert(),
+           self.geo_lst
         )
         self.engine.execute(
-           Place.__table__.insert().values(self.place_lst).on_duplicate_key_update()
+           Place.__table__.insert(),
+           self.place_lst
         )
 
     def add_file(self, fileid):
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
-        self.commit_inserts()
+        # self.commit_inserts()
             #Here is the part where you finish by uploading in bulk through core
 
     def update_database(self, fileids = None, categories = None, file_url = None):
