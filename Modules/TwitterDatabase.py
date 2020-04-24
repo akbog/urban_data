@@ -76,7 +76,7 @@ class TwitterDatabase(object):
         new_tweet.language = self.getLanguage(new_tweet.full_text)
         # self.tweets_lst.append(new_tweet.__dict__)
         self.engine.execute(
-           Tweets.__table__.insert(),
+           Tweet.__table__.insert(),
            [new_tweet.__dict__]
         )
 
@@ -190,7 +190,7 @@ class TwitterDatabase(object):
            self.users_lst
         )
         self.engine.execute(
-           Tweets.__table__.insert(),
+           Tweet.__table__.insert(),
            self.tweets_lst
         )
         self.engine.execute(
