@@ -6,6 +6,7 @@ import multiprocessing as mp
 import json
 import operator
 from collections import OrderedDict
+import multiprocessing as mp
 
 from tqdm import tqdm
 from langdetect import detect
@@ -24,11 +25,6 @@ class TwitterDatabase(object):
         self.engine = db.create_engine(database_url)
         self.make_session = sessionmaker(self.engine)
         self.session = self.make_session()
-        self.tweets_lst = []
-        self.users_lst = []
-        self.entity_lst = []
-        self.geo_lst = []
-        self.place_lst = []
 
 
     def initialize(self):
