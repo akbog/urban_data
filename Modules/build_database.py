@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import os
+import sys
 
 if __name__ == "__main__":
     DOC_PATTERN = r'Tweets/streamed_[0-3][0-9]_[0-1][0-9]_[0-9][0-9][0-9][0-9]_[0-9][0-9]_[0-9][0-9]_[0-9][0-9]\.json\.gz$'
