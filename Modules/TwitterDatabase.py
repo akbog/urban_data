@@ -208,8 +208,8 @@ class ParallelTwitterDatabase(TwitterDatabase):
 
     def __init__(self, *args, **kwargs):
         self.tasks = mp.cpu_count()
-        atexit.register(save_file, self.file_url, self.ordered_dict)
         super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
+        atexit.register(save_file, self.file_url, self.ordered_dict)
 
     def on_result(self, result):
         print("Added File: ", result, " (COMPLETED)")
