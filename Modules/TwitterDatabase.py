@@ -204,7 +204,6 @@ class ParallelTwitterDatabase(TwitterDatabase):
 
     def __init__(self, *args, **kwargs):
         self.tasks = mp.cpu_count()
-        self.results = []
         super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
         # atexit.register(save_file, self.file_url, self.ordered_dict)
 
@@ -216,6 +215,7 @@ class ParallelTwitterDatabase(TwitterDatabase):
         return inner
 
     def update_database(self):
+        self.results = []
         pool = mp.Pool(processes = self.tasks)
         files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
         print(len(files))
