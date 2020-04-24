@@ -32,7 +32,9 @@ if __name__ == "__main__":
             sys.exit(1)
     if not os.path.isfile('tweet_list.pkl'):
         file_path = sys.argv[1]
+        print("Num Files in Dir: ", len(os.listdir(file_path)))
         files = [os.path.join(CAT_PATTERN, f) for f in os.listdir(file_path) if re.match(DOC_PATTERN, os.path.join(CAT_PATTERN,f))]
+        print(len(files))
         with open("tweet_list.pkl", "wb") as write:
             pickle.dump(files, write)
     corpus = NewTwitterCorpusReader(root = root, fileids = DOC_PATTERN, cat_pattern = CAT_PATTERN)
