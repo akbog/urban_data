@@ -51,6 +51,8 @@ class TwitterDatabase(object):
             return "00"
 
     def add_tweet(self, tweet):
+        if self.session.query(Tweet).filter_by(id = tweet["id"]).first():
+            return
         new_tweet = Tweet(
             id = tweet["id"],
             user_id = tweet["user"]["id"],
@@ -79,7 +81,7 @@ class TwitterDatabase(object):
            Tweet.__table__.insert(),
            [new_tweet.__dict__]
         )
-
+        print("Added Tweet")
         # self.session.add(new_tweet)
         # self.session.commit()
 
