@@ -9,7 +9,7 @@ import io
 import re
 import gzip
 from nltk.corpus.reader.api import CorpusReader
-from .categorized_reader import CategorizedCorpusReader
+from categorized_reader import CategorizedCorpusReader
 from nltk.corpus.reader.twitter import TwitterCorpusReader
 from six import string_types, text_type
 from nltk.tokenize import wordpunct_tokenize
