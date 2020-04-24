@@ -22,7 +22,7 @@ import sqlalchemy as db
 from models import *
 
 class TwitterDatabase(object):
-    def __init__(self, corpus, database_url, dict_url = None, **kwargs):
+    def __init__(self, corpus, database_url, dict_url, **kwargs):
         self.corpus = corpus #Here we specify fileids so that we don't have to do the entire corpus at once
         self.engine = db.create_engine(database_url)
         self.make_session = sessionmaker(self.engine)

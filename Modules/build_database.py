@@ -51,6 +51,6 @@ if __name__ == "__main__":
         with open("tweet_dict.pkl", "wb") as write:
             pickle.dump(files, write)
     corpus = NewTwitterCorpusReader(root = root, fileids = DOC_PATTERN, cat_pattern = CAT_PATTERN)
-    database = ParallelTwitterDatabase(corpus, database_url, file_url = 'tweet_dict.pkl')
+    database = ParallelTwitterDatabase(corpus, database_url, 'tweet_dict.pkl')
     updating = database.update_database()
     print(len(list(updating)))
