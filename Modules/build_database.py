@@ -15,7 +15,7 @@ import os
 import sys
 import re
 
-def sort_files(files):
+def sort_files(files, reverse_opt):
     regex_str = r'Tweets\/streamed_([0-3][0-9])_([0-1][0-9])_([0-9][0-9][0-9][0-9])_([0-9][0-9])_([0-9][0-9])_([0-9][0-9])\.json\.gz'
     unordered_dict = {}
     for file in files:
@@ -23,7 +23,7 @@ def sort_files(files):
         day, month, year, hour, minute, second = groups.groups()
         file_key = datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
         unordered_dict[file_key] = file
-    return OrderedDict(sorted(unordered_dict.items(), key = operator.itemgetter(0)))
+    return OrderedDict(sorted(unordered_dict.items(), reverse = reverse_opt, key = operator.itemgetter(0)))
 
 if __name__ == "__main__":
     DOC_PATTERN = r'Tweets/streamed_[0-3][0-9]_[0-1][0-9]_[0-9][0-9][0-9][0-9]_[0-9][0-9]_[0-9][0-9]_[0-9][0-9]\.json\.gz$'
@@ -57,13 +57,13 @@ if __name__ == "__main__":
         if not reverse:
             file_path = sys.argv[1]
             files = [os.path.join(FOLDER_PATTERN, f) for f in os.listdir(file_path) if re.match(DOC_PATTERN, str(os.path.join(FOLDER_PATTERN,f)))]
-            files = sort_files(files)
+            files = sort_files(files, False)
             with open(file_url, "wb") as write:
                 pickle.dump(files, write)
         else:
             file_path = sys.argv[1]
             files = [os.path.join(FOLDER_PATTERN, f) for f in os.listdir(file_path) if re.match(DOC_PATTERN, str(os.path.join(FOLDER_PATTERN,f)))]
-            files = reverse(sort_files(files))
+            files = sort_files(files, True)
             with open(file_url, "wb") as write:
                 pickle.dump(files, write)
     corpus = NewTwitterCorpusReader(root = root, fileids = DOC_PATTERN, cat_pattern = CAT_PATTERN)
