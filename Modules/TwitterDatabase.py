@@ -78,13 +78,10 @@ class TwitterDatabase(object):
             new_tweet.quote_id = tweet["quoted_status"]["id"]
         new_tweet.language = self.getLanguage(new_tweet.full_text)
         # self.tweets_lst.append(new_tweet.__dict__)
-        try:
-            self.engine.execute(
-               Tweet.__table__.insert(),
-               [new_tweet.__dict__]
-            )
-        except ValueError:
-            print('ValueError in Tweet id: {}'.format(tweet["id"]))
+        self.engine.execute(
+           Tweet.__table__.insert(),
+           [new_tweet.__dict__]
+        )
 
         # self.session.add(new_tweet)
         # self.session.commit()
@@ -108,13 +105,10 @@ class TwitterDatabase(object):
         if tweet["location"]:
             new_user.located = tweet["location"]
         # self.users_lst.append(new_user.__dict__)
-        try:
-            self.engine.execute(
-               Users.__table__.insert(),
-               [new_user.__dict__]
-            )
-        except ValueError:
-            print('ValueError in User Id: {}'.format(tweet["id"]))
+        self.engine.execute(
+           Users.__table__.insert(),
+           [new_user.__dict__]
+        )
         # self.session.add(new_user)
         # self.session.commit()
         # self.addUserLocation(new_user, tweet)
@@ -125,13 +119,10 @@ class TwitterDatabase(object):
             entities = tweet_ent
         )
         # self.entity_lst.append(new_entity.__dict__)
-        try:
-            self.engine.execute(
-               Entity.__table__.insert(),
-               [new_entity.__dict__]
-            )
-        except ValueError:
-            print('ValueError in Entities with Tweet Id: {}'.format(id))
+        self.engine.execute(
+           Entity.__table__.insert(),
+           [new_entity.__dict__]
+        )
         # self.session.add(new_entity)
 
     def add_geo(self, id, geo_json):
@@ -140,13 +131,10 @@ class TwitterDatabase(object):
             coordinates = geo_json
         )
         # self.geo_lst.append(new_geo.__dict__)
-        try:
-            self.engine.execute(
-               Geo.__table__.insert(),
-               [new_geo.__dict__]
-            )
-        except ValueError:
-            print('ValueError in Geo with Tweet Id: {}'.format(id))
+        self.engine.execute(
+           Geo.__table__.insert(),
+           [new_geo.__dict__]
+        )
         # self.session.add(new_geo)
 
     def add_place(self, id, place_json):
@@ -154,26 +142,43 @@ class TwitterDatabase(object):
             tweet_id = id,
             places = place_json
         )
-        try:
-            self.engine.execute(
-               Place.__table__.insert(),
-               [new_place.__dict__]
-            )
-        except ValueError:
-            print('ValueError in Place with Tweet Id: {}'.format(id))
+        self.engine.execute(
+           Place.__table__.insert(),
+           [new_place.__dict__]
+        )
         # self.place_lst.append(new_place.__dict__)
         # self.session.add(new_place)
 
     def add_all(self, tweet):
         if self.session.query(Tweet).filter_by(id = tweet["id"]).first():
             return
-        self.add_user(tweet["user"])
-        self.add_tweet(tweet)
-        self.add_entities(tweet["id"], json.dumps(tweet["entities"]))
+        try:
+            self.add_user(tweet["user"])
+        except ValueError:
+            print('ValueError in User Id: {}'.format(tweet["user"]["id"]))
+            return
+        try:
+            self.add_tweet(tweet)
+        except ValueError:
+            print('ValueError in Tweet id: {}'.format(tweet["id"]))
+            return
+        try:
+            self.add_entities(tweet["id"], json.dumps(tweet["entities"]))
+        except ValueError:
+            print('ValueError in Entities with Tweet Id: {}'.format(tweet["id"]))
+            return
         if tweet["coordinates"]:
-            self.add_geo(tweet["id"], json.dumps(tweet["coordinates"]))
+            try:
+                self.add_geo(tweet["id"], json.dumps(tweet["coordinates"]))
+            except ValueError:
+                print('ValueError in Geo with Tweet Id: {}'.format(tweet["id"]))
+                return
         if tweet["place"]:
-            self.add_place(tweet["id"], json.dumps(tweet["place"]))
+            try:
+                self.add_place(tweet["id"], json.dumps(tweet["place"]))
+            except ValueError:
+                print('ValueError in Place with Tweet Id: {}'.format(tweet["id"]))
+                return
         return tweet["id"]
 
     def process(self, tweet):
