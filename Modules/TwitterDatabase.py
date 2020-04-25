@@ -229,7 +229,7 @@ class ParallelTwitterDatabase(TwitterDatabase):
         print("Initializing Pool...")
         print("Beginning Parallel Processing")
         with mp.Pool(processes = self.tasks) as pool:
-            tasks = pool.imap(self.add_file, pairs)
+            tasks = pool.starmap(self.add_file, pairs)
         # tasks = [
         #     pool.apply_async(self.add_file(fileid, file_key), callback = self.on_result)
         #     for file_key, fileid in files
