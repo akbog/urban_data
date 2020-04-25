@@ -177,7 +177,7 @@ class TwitterDatabase(object):
     def add_file(self, fileid, filekey):
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
-        self.update_file(filekey)
+        self.update_file(filekey, fileid)
         return fileid
 
     def update_database(self, fileids = None, categories = None):
