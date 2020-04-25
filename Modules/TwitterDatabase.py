@@ -174,6 +174,7 @@ class TwitterDatabase(object):
         if self.count > 20:
             with open(self.file_url, "wb") as write:
                 pickle.dump(self.ordered_dict, write)
+            self.count = 0
         print("Adding File: {} ".format(fileid), ("(COMPLETED)"))
 
     def add_file(self, file_tup):
@@ -222,9 +223,10 @@ class ParallelTwitterDatabase(TwitterDatabase):
         self.results = []
         pool = mp.Pool(processes = self.tasks)
         files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
+        pairs = [(fileid, file_key) for file_key, fileid in files]
         print("Initializing Pool...")
         print("Beginning Parallel Processing")
-        pool.map(self.add_file, [(fileid, file_key) for file_key, fileid in files])
+        pool.starmap(self.add_file, pairs)
         # tasks = [
         #     pool.apply_async(self.add_file(fileid, file_key), callback = self.on_result)
         #     for file_key, fileid in files
