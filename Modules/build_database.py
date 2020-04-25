@@ -42,7 +42,7 @@ if __name__ == "__main__":
             Base.metadata.create_all(engine)
         elif sys.argv[2] == "append":
             pass
-        elif sys.argv[3] == "reverse":
+        if sys.argv[3] == "reverse":
             reverse = True
         elif sys.argv[3] == "forward":
             reverse = False
