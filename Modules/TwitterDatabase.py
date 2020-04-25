@@ -12,7 +12,6 @@ import sys
 
 from tqdm import tqdm
 from langdetect import detect
-from itertools import product
 # from postal.expand import expand_address
 # from postal.parser import parse_address
 from sqlalchemy.orm import sessionmaker
@@ -28,8 +27,8 @@ class TwitterDatabase(object):
         self.engine = db.create_engine(database_url)
         self.make_session = sessionmaker(self.engine)
         self.session = self.make_session()
-        self.file_url = dict_url
         self.count = 0
+        self.file_url = dict_url
         with open(self.file_url, "rb") as read:
             self.ordered_dict = pickle.load(read)
 
@@ -172,18 +171,16 @@ class TwitterDatabase(object):
 
     def update_file(self, filekey, fileid):
         del self.ordered_dict[filekey]
-        self.results.append(fileid)
-        if self.count > 20:
+        self.count += 1
+        if self.count > 10:
             with open(self.file_url, "wb") as write:
                 pickle.dump(self.ordered_dict, write)
             self.count = 0
         print("Adding File: {} ".format(fileid), ("(COMPLETED)"))
 
-    def add_file(self, file_tup):
-        fileid, filekey = file_tup
+    def add_file(self, fileid, filekey):
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
-        self.count += 1
         self.update_file(filekey, fileid)
         return fileid
 
@@ -210,6 +207,10 @@ class TwitterDatabase(object):
             for fileid in self.fileids(fileids, categories):
                 yield self.add_file(fileid)
 
+def save_file(file_name, ordered_dict):
+    with open(file_name, "wb") as write:
+        pickle.dump(ordered_dict, write)
+
 class ParallelTwitterDatabase(TwitterDatabase):
 
     def __init__(self, *args, **kwargs):
@@ -217,24 +218,21 @@ class ParallelTwitterDatabase(TwitterDatabase):
         super(ParallelTwitterDatabase, self).__init__(*args, **kwargs)
         # atexit.register(save_file, self.file_url, self.ordered_dict)
 
-    # def on_result(self, result):
-    #     print("Added File: ", result, " (COMPLETED)")
-    #     self.results.append(result)
+    def on_result(self, result):
+        print("Added File: ", result, " (COMPLETED)")
+        self.results.append(result)
 
     def update_database(self):
         self.results = []
-        # pool = mp.Pool(processes = self.tasks)
+        pool = mp.Pool(processes = self.tasks)
         files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
-        pairs = [(fileid, file_key) for file_key, fileid in files]
         print("Initializing Pool...")
         print("Beginning Parallel Processing")
-        with mp.Pool(processes = self.tasks) as pool:
-            tasks = pool.starmap(self.add_file, pairs)
-        # tasks = [
-        #     pool.apply_async(self.add_file(fileid, file_key), callback = self.on_result)
-        #     for file_key, fileid in files
-        # ]
+        tasks = [
+            pool.apply_async(self.add_file(fileid, file_key), callback = self.on_result)
+            for file_key, fileid in files
+        ]
         pool.close()
         pool.join()
-        print(tasks)
+        print("{} Files Added to Database".format(len(tasks)))
         return self.results
