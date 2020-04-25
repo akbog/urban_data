@@ -32,6 +32,7 @@ if __name__ == "__main__":
     root = r'../../Data'
     database_url = os.environ["DB_URL"]
     engine = create_engine(database_url)
+    reverse = False
     if len(sys.argv) < 2:
         print("Please Specify File URL for import")
         sys.exit(1)
