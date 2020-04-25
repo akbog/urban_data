@@ -53,4 +53,4 @@ if __name__ == "__main__":
     corpus = NewTwitterCorpusReader(root = root, fileids = DOC_PATTERN, cat_pattern = CAT_PATTERN)
     database = ParallelTwitterDatabase(corpus, database_url, 'tweet_dict.pkl')
     updating = database.update_database()
-    print(len(list(updating)))
+    # print(len(list(updating)))

@@ -169,11 +169,9 @@ class TwitterDatabase(object):
         return self.add_all(tweet)
 
     def add_file(self, fileid):
-        all_tweets = [
+        for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
-            for tweet in self.corpus.full_text_tweets(fileids = fileid)
-        ]
-        return len(all_tweets)
+        return fileid
 
     def update_database(self, fileids = None, categories = None):
         if self.file_url:
@@ -210,23 +208,20 @@ class ParallelTwitterDatabase(TwitterDatabase):
         # atexit.register(save_file, self.file_url, self.ordered_dict)
 
     def on_result(self, result):
-        # del self.ordered_dict[result]
-        def inner(result):
-            print("Added File: ", result, " (COMPLETED)")
-            self.results.append(result)
-        return inner
+        print("Added File: ", result, " (COMPLETED)")
+        self.results.append(result)
 
     def update_database(self):
         self.results = []
-        print("Num Tasks ", self.tasks)
         pool = mp.Pool(processes = self.tasks)
         files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
+        print("Initializing Pool...")
+        print("Beginning Parallel Processing")
         tasks = [
             pool.apply_async(self.add_file(fileid), callback = self.on_result)
             for file_key, fileid in files
         ]
-        print("Finished Building Tasks")
         pool.close()
-        print("Starting Pool")
         pool.join()
+        print("Finished Building DB")
         return self.results
