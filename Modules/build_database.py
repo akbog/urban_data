@@ -35,21 +35,36 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Please Specify File URL for import")
         sys.exit(1)
-    elif len(sys.argv) == 3:
+    elif len(sys.argv) <= 4:
         if sys.argv[2] == "clean":
             Base.metadata.drop_all(engine)
             Base.metadata.create_all(engine)
         elif sys.argv[2] == "append":
             pass
+        elif sys.argv[3] == "reverse":
+            reverse = True
+        elif sys.argv[3] == "forward":
+            reverse = False
         else:
             print("Second Arg Reserved for: clean or append")
             sys.exit(1)
-    if not os.path.isfile('tweet_dict.pkl'):
-        file_path = sys.argv[1]
-        files = [os.path.join(FOLDER_PATTERN, f) for f in os.listdir(file_path) if re.match(DOC_PATTERN, str(os.path.join(FOLDER_PATTERN,f)))]
-        files = sort_files(files)
-        with open("tweet_dict.pkl", "wb") as write:
-            pickle.dump(files, write)
+    if reverse:
+        file_url = 'tweet_dict.pkl'
+    else:
+        file_url = 'rev_tweet_dict.pkl'
+    if not os.path.isfile(file_url):
+        if not reverse:
+            file_path = sys.argv[1]
+            files = [os.path.join(FOLDER_PATTERN, f) for f in os.listdir(file_path) if re.match(DOC_PATTERN, str(os.path.join(FOLDER_PATTERN,f)))]
+            files = sort_files(files)
+            with open(file_url, "wb") as write:
+                pickle.dump(files, write)
+        else:
+            file_path = sys.argv[1]
+            files = [os.path.join(FOLDER_PATTERN, f) for f in os.listdir(file_path) if re.match(DOC_PATTERN, str(os.path.join(FOLDER_PATTERN,f)))]
+            files = reverse(sort_files(files))
+            with open(file_url, "wb") as write:
+                pickle.dump(files, write)
     corpus = NewTwitterCorpusReader(root = root, fileids = DOC_PATTERN, cat_pattern = CAT_PATTERN)
     database = ParallelTwitterDatabase(corpus, database_url, 'tweet_dict.pkl')
     updating = database.update_database()
