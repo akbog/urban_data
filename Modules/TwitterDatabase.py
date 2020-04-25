@@ -168,9 +168,16 @@ class TwitterDatabase(object):
             self.process(tweet["quoted_status"])
         return self.add_all(tweet)
 
-    def add_file(self, fileid):
+    def update_file(self, filekey, fileid):
+        del self.ordered_dict[filekey]
+        with open(self.file_url, "wb") as write:
+            pickle.dump(self.ordered_dict, write)
+        print("Adding File: {} ".format(fileid), ("(COMPLETED)"))
+
+    def add_file(self, fileid, filekey):
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
+        self.update_file(filekey)
         return fileid
 
     def update_database(self, fileids = None, categories = None):
@@ -218,10 +225,10 @@ class ParallelTwitterDatabase(TwitterDatabase):
         print("Initializing Pool...")
         print("Beginning Parallel Processing")
         tasks = [
-            pool.apply_async(self.add_file(fileid), callback = self.on_result)
+            pool.apply_async(self.add_file(fileid, file_key), callback = self.on_result)
             for file_key, fileid in files
         ]
         pool.close()
         pool.join()
-        print("Finished Building DB")
+        print("{} Files Added to Database".format(len(tasks)))
         return self.results
