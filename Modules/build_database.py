@@ -50,9 +50,9 @@ if __name__ == "__main__":
             print("Second Arg Reserved for: clean or append")
             sys.exit(1)
     if reverse:
-        file_url = 'tweet_dict.pkl'
-    else:
         file_url = 'rev_tweet_dict.pkl'
+    else:
+        file_url = 'tweet_dict.pkl'
     if not os.path.isfile(file_url):
         if not reverse:
             file_path = sys.argv[1]
