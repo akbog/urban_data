@@ -28,6 +28,7 @@ class TwitterDatabase(object):
         self.make_session = sessionmaker(self.engine)
         self.session = self.make_session()
         self.file_url = dict_url
+        self.count = 0
         with open(self.file_url, "rb") as read:
             self.ordered_dict = pickle.load(read)
 
@@ -170,13 +171,16 @@ class TwitterDatabase(object):
 
     def update_file(self, filekey, fileid):
         del self.ordered_dict[filekey]
-        with open(self.file_url, "wb") as write:
-            pickle.dump(self.ordered_dict, write)
+        if self.count > 20:
+            with open(self.file_url, "wb") as write:
+                pickle.dump(self.ordered_dict, write)
         print("Adding File: {} ".format(fileid), ("(COMPLETED)"))
 
-    def add_file(self, fileid, filekey):
+    def add_file(self, file_tup):
+        fileid, filekey = file_tup
         for tweet in self.corpus.full_text_tweets(fileids = fileid):
             self.process(tweet)
+        self.count += 1
         self.update_file(filekey, fileid)
         return fileid
 
@@ -203,10 +207,6 @@ class TwitterDatabase(object):
             for fileid in self.fileids(fileids, categories):
                 yield self.add_file(fileid)
 
-def save_file(file_name, ordered_dict):
-    with open(file_name, "wb") as write:
-        pickle.dump(ordered_dict, write)
-
 class ParallelTwitterDatabase(TwitterDatabase):
 
     def __init__(self, *args, **kwargs):
@@ -224,10 +224,11 @@ class ParallelTwitterDatabase(TwitterDatabase):
         files = [(key, value) for key, value in reversed(self.ordered_dict.items())]
         print("Initializing Pool...")
         print("Beginning Parallel Processing")
-        tasks = [
-            pool.apply_async(self.add_file(fileid, file_key), callback = self.on_result)
-            for file_key, fileid in files
-        ]
+        pool.map(self.add_file, [(fileid, file_key) for file_key, fileid in files])
+        # tasks = [
+        #     pool.apply_async(self.add_file(fileid, file_key), callback = self.on_result)
+        #     for file_key, fileid in files
+        # ]
         pool.close()
         pool.join()
         print("{} Files Added to Database".format(len(tasks)))
