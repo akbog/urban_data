@@ -195,7 +195,7 @@ class TwitterDatabase(object):
                     %(num_favourites)s,
                     %(num_tweets)s,
                     %(located)s
-                ) ON CONFLICT users.user_id DO NOTHING;
+                ) ON CONFLICT (user_id) DO NOTHING;
             """, all_users)
 
     def add_all_tweets(self):
@@ -218,7 +218,7 @@ class TwitterDatabase(object):
                     %(retweet_count)s,
                     %(favorite_count)s,
                     %(language)s
-                ) ON CONFLICT tweet.id DO NOTHING;
+                ) ON CONFLICT (id) DO NOTHING;
             """, all_tweets)
 
     def add_file(self, fileid, filekey):
