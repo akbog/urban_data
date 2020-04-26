@@ -175,7 +175,7 @@ class TwitterDatabase(object):
         print("Adding File: {} ".format(fileid), ("(COMPLETED)"))
 
     def add_all_users(self):
-        with connection.cursor() as cursor:
+        with self.connection.cursor() as cursor:
             all_users = [
                 self.add_user(tweet)
                 for tweet in self.corpus.full_text_tweets_gen() if "id" in tweet
@@ -198,7 +198,7 @@ class TwitterDatabase(object):
             """, all_users)
 
     def add_all_tweets(self):
-        with connection.cursor() as cursor:
+        with self.connection.cursor() as cursor:
             all_tweets = [
                 self.add_tweet(tweet)
                 for tweet in self.corpus.full_text_tweets_gen() if "id" in tweet
