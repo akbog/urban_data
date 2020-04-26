@@ -137,18 +137,19 @@ class TwitterDatabase(object):
     #     return new_entity
 
     def add_geo(self):
-        new_geo = [
-            {"tweet_id" : id, "coordinates" : geo_json}
-            for id, geo_json in self.geo_querries
-        ]
         with self.connection.cursor() as cursor:
-            cursor.execute("""
+            new_geo = [
+                {"tweet_id" : id, "coordinates" : geo_json}
+                for id, geo_json in self.geo_querries
+            ]
+            psycopg2.extras.execute_batch(cursor, """
                 INSERT INTO geo VALUES (
                     %(tweet_id)s,
                     %(coordinates)s
                 )
                 ON CONFLICT DO NOTHING;
             """, new_geo)
+        self.geo_querries = []
         return
 
     """Not In Use"""
