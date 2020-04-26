@@ -208,7 +208,7 @@ class MemTwitterDatabase(object):
         self.connection.commit()
         self.new_tweets = []
 
-    def process(self):
+    def process(self, tweet):
         if not "id" in tweet:
             return
         if "retweeted_status" in tweet:
