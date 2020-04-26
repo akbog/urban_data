@@ -2,6 +2,7 @@
 #Then, cycle through and build the database with locations
 from TwitterReader import NewTwitterCorpusReader
 from TwitterDatabase import ParallelTwitterDatabase
+from TwitterDatabaseUpdate import TwitterDatabase
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from models import *
@@ -67,6 +68,6 @@ if __name__ == "__main__":
             with open(file_url, "wb") as write:
                 pickle.dump(files, write)
     corpus = NewTwitterCorpusReader(root = root, fileids = DOC_PATTERN, cat_pattern = CAT_PATTERN)
-    database = ParallelTwitterDatabase(corpus, database_url, file_url)
+    database = TwitterDatabase(corpus, database_url, file_url)
     updating = database.update_database()
     print(len(list(updating)))

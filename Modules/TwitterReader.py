@@ -97,6 +97,7 @@ class NewTwitterCorpusReader(CategorizedCorpusReader, CorpusReader):
             raise TypeError('CorpusReader: expected a string or a PathPointer')
 
         self._root = root
+        self.current_doc = []
 
     def _resolve(self, fileids, categories):
         if fileids is not None and categories is not None:
@@ -132,6 +133,14 @@ class NewTwitterCorpusReader(CategorizedCorpusReader, CorpusReader):
             return list(zip(paths, [self.encoding(f) for f in fileids]))
         else:
             return paths
+
+    def init_doc(self, fileids = None, categories = None):
+        self.current_doc = self.docs(fileids, categories)
+
+    def full_text_tweets_gen(self):
+        for doc in self.current_doc:
+            for tweet in doc:
+                yield json.loads(tweet)
 
     def full_text_tweets(self, fileids = None, categories = None):
         for doc in self.docs(fileids, categories):
