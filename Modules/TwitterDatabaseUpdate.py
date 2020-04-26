@@ -145,7 +145,8 @@ class TwitterDatabase(object):
                 INSERT INTO geo VALUES (
                     %(tweet_id)s,
                     %(coordinates)s
-                );
+                )
+                ON CONFLICT DO NOTHING;
             """, new_geo)
         return
 
@@ -195,8 +196,10 @@ class TwitterDatabase(object):
                     %(num_favourites)s,
                     %(num_tweets)s,
                     %(located)s
-                ) ON CONFLICT (user_id) DO UPDATE SET created = %(created)s;
+                ) ON CONFLICT DO NOTHING;
             """, all_users)
+
+            # (user_id) DO UPDATE SET created = %(created)s;
 
     def add_all_tweets(self):
         with self.connection.cursor() as cursor:
@@ -218,8 +221,10 @@ class TwitterDatabase(object):
                     %(retweet_count)s,
                     %(favorite_count)s,
                     %(language)s
-                ) ON CONFLICT (id) DO UPDATE SET created = %(created)s;
+                ) ON CONFLICT DO NOTHING;
             """, all_tweets)
+
+            # (id) DO UPDATE SET created = %(created)s
 
     def add_file(self, fileid, filekey):
         self.corpus.init_doc(fileids = fileid)
