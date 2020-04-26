@@ -74,6 +74,7 @@ class TwitterDatabase(object):
             self.add_user(tweet["retweeted_status"])
         if "quoted_status" in tweet:
             self.add_user(tweet["quoted_status"])
+        tweet = tweet["user"]
         new_user = {
             "user_id" : tweet["id"],
             "name" : tweet["name"],
@@ -134,7 +135,7 @@ class TwitterDatabase(object):
     #     }
     #     return new_entity
 
-    def add_geo(self, tweet):
+    def add_geo(self, id, geo_json):
         new_geo = {
             "tweet_id" : id,
             "coordinates" : geo_json
