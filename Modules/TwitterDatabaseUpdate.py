@@ -109,7 +109,7 @@ class TwitterDatabase(object):
             "reply_count" : tweet["reply_count"],
             "retweet_count" : tweet["retweet_count"],
             "favorite_count" : tweet["favorite_count"],
-            "retweed_id" : None,
+            "retweet_id" : None,
             "quote_id" : None,
         }
         if "retweeted_status" in tweet:
