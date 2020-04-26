@@ -50,6 +50,7 @@ class TwitterDatabase(object):
             user = os.environ["DB_USER"],
             password = os.environ["DB_PASS"]
         )
+        self.connection.autocommit = True
         self.count = 0
         self.geo_querries = []
         self.file_url = dict_url
