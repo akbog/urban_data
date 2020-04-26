@@ -51,6 +51,7 @@ class TwitterDatabase(object):
             password = os.environ["DB_PASS"]
         )
         self.count = 0
+        self.geo_querries = []
         self.file_url = dict_url
         with open(self.file_url, "rb") as read:
             self.ordered_dict = pickle.load(read)
@@ -99,7 +100,7 @@ class TwitterDatabase(object):
         if "quoted_status" in tweet:
             self.add_tweet(tweet["quoted_status"])
         if tweet["coordinates"]:
-                self.add_geo(tweet["id"], json.dumps(tweet["coordinates"]))
+            self.geo_querries.append((tweet["id"], json.dumps(tweet["coordinates"])))
         new_tweet = {
             "id" : tweet["id"],
             "user_id" : tweet["user"]["id"],
@@ -135,11 +136,11 @@ class TwitterDatabase(object):
     #     }
     #     return new_entity
 
-    def add_geo(self, id, geo_json):
-        new_geo = {
-            "tweet_id" : id,
-            "coordinates" : geo_json
-        }
+    def add_geo(self):[]
+        new_geo = [
+            {"tweet_id" : id, "coordinates" : geo_json}
+            for id, geo_json in self.geo_querries
+        ]
         with self.connection.cursor() as cursor:
             cursor.execute("""
                 INSERT INTO geo VALUES (
@@ -230,6 +231,7 @@ class TwitterDatabase(object):
         self.corpus.init_doc(fileids = fileid)
         self.add_all_users()
         self.add_all_tweets()
+        self.add_geo()
         self.update_file(filekey, fileid)
         return fileid
 
