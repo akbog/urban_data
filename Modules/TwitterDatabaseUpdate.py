@@ -124,7 +124,7 @@ class TwitterDatabase(object):
             new_tweet["full_text"] = tweet['text']
         if "quoted_status" in tweet:
             new_tweet["quote_id"] = tweet["quoted_status"]["id"]
-        new_tweet["language"] = self.getLanguage(new_tweet.full_text)
+        new_tweet["language"] = self.getLanguage(new_tweet["full_text"])
         return new_tweet
 
     """Not In Use"""
