@@ -136,7 +136,7 @@ class TwitterDatabase(object):
     #     }
     #     return new_entity
 
-    def add_geo(self):[]
+    def add_geo(self):
         new_geo = [
             {"tweet_id" : id, "coordinates" : geo_json}
             for id, geo_json in self.geo_querries
