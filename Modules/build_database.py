@@ -73,13 +73,12 @@ if __name__ == "__main__":
     else:
         print("Second Arg Reserved for: clean or append")
         sys.exit(1)
+    odd = False
+    even = False
     if sys.argv[4] == "odd":
         odd = True
     elif sys.argv[4] == "even":
         even = True
-    else:
-        odd = False
-        even = False
 
     if reverse:
         file_url = 'rev_tweet_dict'
