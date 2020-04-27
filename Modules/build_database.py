@@ -60,10 +60,12 @@ if __name__ == "__main__":
         print("Please Specify File URL for import")
         sys.exit(1)
     if sys.argv[2] == "clean":
-        Base.metadata.drop_all(engine)
-        Base.metadata.create_all(engine)
+        if os.environ["DB_CLEAN_CONFIRM"] == "confirm":
+            Base.metadata.drop_all(engine)
+            Base.metadata.create_all(engine)
+        rebuild = True
     elif sys.argv[2] == "append":
-        pass
+        rebuild = False
     if sys.argv[3] == "reverse":
         reverse = True
     elif sys.argv[3] == "forward":
@@ -78,10 +80,6 @@ if __name__ == "__main__":
     else:
         odd = False
         even = False
-    if sys.argv[5] == "rebuild"
-        rebuild = True
-    else:
-        rebuild = False
 
     if reverse:
         file_url = 'rev_tweet_dict'
