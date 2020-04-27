@@ -37,16 +37,18 @@ def sort_files(files, reverse_opt, even, odd):
 def re_sort(file_url, odd, even, file_out):
     with open(file_url, "rb") as read:
         ordered_dict = pickle.load(read)
+    with open(file_url, "rb") as read:
+        new_dict = pickle.load(read)
     if even:
         for key, value in ordered_dict.items():
             if not key.day % 2 == 0:
-                del ordered_dict[key]
+                del new_dict[key]
     elif odd:
         for key, value in ordered_dict.items():
             if key.day % 2 == 0:
-                del ordered_dict[key]
+                del new_dict[key]
     with open(file_out, "wb") as write:
-        pickle.dump(ordered_dict, write)
+        pickle.dump(new_dict, write)
 
 if __name__ == "__main__":
     DOC_PATTERN = r'Tweets/streamed_[0-3][0-9]_[0-1][0-9]_[0-9][0-9][0-9][0-9]_[0-9][0-9]_[0-9][0-9]_[0-9][0-9]\.json\.gz$'
