@@ -60,10 +60,10 @@ class Tweet(Base):
     geos = relationship('Geo', backref = 'tweet', lazy = True)
     places = relationship('Place', backref = 'tweet', lazy = True)
 
-# class TokenizedTweet(Base):
-#     __tablename__ = 'tokenizedtweet'
-#     tweet_id = db.Column(db.BigInteger, db.ForeignKey('tweet.id'), primary_key = True)
-#     tokenized = db.Column(db.JSON(), nullable = False, unique = False)
+class TokenizedTweet(Base):
+    __tablename__ = 'tokenizedtweet'
+    tweet_id = db.Column(db.BigInteger, db.ForeignKey('tweet.id'), primary_key = True)
+    tokenized = db.Column(db.JSON(), nullable = False, unique = False)
 
 class Entity(Base):
     __tablename__ = 'entity'

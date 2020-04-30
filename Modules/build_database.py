@@ -54,7 +54,7 @@ if __name__ == "__main__":
     DOC_PATTERN = r'Tweets/streamed_[0-3][0-9]_[0-1][0-9]_[0-9][0-9][0-9][0-9]_[0-9][0-9]_[0-9][0-9]_[0-9][0-9]\.json\.gz$'
     CAT_PATTERN = r'.*Tweets.*'
     FOLDER_PATTERN = r'Tweets'
-    root = r'../../Data'
+    root = r'../../../Data'
     database_url = os.environ["DB_URL"]
     engine = create_engine(database_url)
     reverse = False
