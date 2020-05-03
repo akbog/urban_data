@@ -10,7 +10,7 @@ import nltk
 from RedditScore.redditscore.tokenizer import CrazyTokenizer
 from timeit import default_timer as timer
 
-OUTPUT_DIR = "../../../Tweet_Directory/DFST/"
+OUTPUT_DIR = "../../../../Tweet_Directory/DFST/"
 
 PATTERNS = [
     ('group1',re.compile(r"(?i)sars-cov|sars-cov-2|sarscov-2|sarscov2|sarscov|sars-cov|covid_19|covidー19|covid-19|covid19|covid19|cov-2|cov2|covid2019|cov2019|cov19|corona-virus|corona virus|covid 19|cov 19|covid|corona"),"coronavirus"),
