@@ -32,8 +32,8 @@ def tokenize(partition):
     print("Tokenization Finished for {}. Took {} seconds.".format(partition_name, end-start))
 
 if __name__ == "__main__":
-    # c = Client(processes = True)
-    c = Client()
+    c = Client(processes = True)
+    # c = Client()
     print(c)
     data = dd.read_parquet(DATA_DIR)
     data.map_partitions(tokenize).compute()

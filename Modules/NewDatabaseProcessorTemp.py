@@ -7,7 +7,6 @@ import logging
 from functools import partial
 from multiprocessing.pool import Pool
 from time import time
-
 from .RedditScore.redditscore.tokenizer import CrazyTokenizer
 from sqlalchemy.orm import sessionmaker
 from .models import *

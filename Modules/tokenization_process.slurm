@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -n 8
 #SBATCH -N 8
-#SBATCH -t 0-1:00
+#SBATCH -t 0-10:00
 #SBATCH -p serial
 #SBATCH --mem=128G
 #SBATCH -o myjob.o
