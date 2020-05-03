@@ -11,5 +11,5 @@
 
 module purge
 module load anaconda3/5.2.0
-source ../../Scripts/venv-urban/bin/activate
-python3 Modules/tokenizing_dask.py
+source ../../../Scripts/venv-urban/bin/activate
+python3 tokenizing_dask.py
