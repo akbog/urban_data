@@ -7,7 +7,7 @@ from dask.distributed import Client
 import os
 import re
 import nltk
-from RedditScore.redditscore.tokenizer import CrazyTokenizer
+from .RedditScore.redditscore.tokenizer import CrazyTokenizer
 from timeit import default_timer as timer
 
 OUTPUT_DIR = "../../../Tweet_Directory/DFST/"

@@ -337,6 +337,7 @@ class CrazyTokenizer(object):
                  numbers=False, subreddits=False, reddit_usernames=False,
                  emails=False, extra_patterns=None, keep_untokenized=None,
                  whitespaces_to_underscores=True, remove_nonunicode=False,
+                 remove_numbers = False,
                  pos_emojis=None, neg_emojis=None, neutral_emojis=None,
                  print_url_warnings=False, latin_chars_fix=False,
                  ngrams=1):
@@ -392,6 +393,10 @@ class CrazyTokenizer(object):
         if remove_punct:
             self._matcher.add('PUNCTUATION', self._remove_token, [
                 {'IS_PUNCT': True}])
+
+        if remove_numbers:
+            self._matcher.add('NUMBERS', self._remove_token, [
+                {'LIKE_NUM':True}])
 
         if remove_breaks:
             def break_check(text):
@@ -521,7 +526,7 @@ class CrazyTokenizer(object):
         if isinstance(extra_patterns, list):
             self._flags = {}
             for name, re_pattern, replacement_token in extra_patterns:
-                def flag(text): return bool(re_pattern.match(text))
+                def flag(text): return bool(re_pattern.search(text))
                 self._flags[name] = self._nlp.vocab.add_flag(flag)
                 self._matcher.add(name, self._replace_token,
                                   [{self._flags[name]: True}])
@@ -613,6 +618,7 @@ class CrazyTokenizer(object):
 
     def _replace_token(self, __, doc, i, matches):
         # Replace tokens with something else
+
         match_id, start, end = matches[i]
         span = doc[start:end]
         replacement_token = self._replacements[doc.vocab.strings[match_id]]
