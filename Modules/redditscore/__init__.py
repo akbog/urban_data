@@ -1,1 +1,1 @@
-from .tokenizer import tokenizer
+from .tokenizer import CrazyTokenizer
