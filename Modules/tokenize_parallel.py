@@ -1,11 +1,9 @@
 import os
 import sys
-import dask.dataframe as dd
 import pyarrow.parquet as pq
 import pyarrow as pa
 from pyarrow import csv
 import pandas as pd
-from dask.distributed import Client
 
 def build_output_file(output_file):
     print("Building File For Parsing: ", end = "")
@@ -36,7 +34,7 @@ def build_directory(input_file, output_directory):
     wd_types = {'id' : 'int64', 'user_id' : 'int64', 'full_text' : str,'tw_year' : 'int64', 'tw_month' : 'int64', 'tw_day' : 'int64'}
     with_days_csv = pd.read_csv(input_file, header = 0, dtype = wd_types, parse_dates = ['created'], lineterminator = "\n")
     table = pa.Table.from_pandas(with_days_csv)
-    pq.write_to_dataset(table, root_path = 'Distributed_File_Struct/DFS', partition_cols=['tw_year', 'tw_month', 'tw_day'])
+    pq.write_to_dataset(table, root_path = output_directory, partition_cols=['tw_year', 'tw_month', 'tw_day'])
     print("(COMPLETE)")
 
 if __name__ == "__main__":
