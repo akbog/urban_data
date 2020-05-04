@@ -2,7 +2,7 @@
 #SBATCH -n 8
 #SBATCH -N 8
 #SBATCH -t 0-10:00
-#SBATCH -p serial
+#SBATCH -p parallel
 #SBATCH --mem=128G
 #SBATCH -o myjob.o
 #SBATCH -e myjob.e
