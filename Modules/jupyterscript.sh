@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -p parallel
-#SBATCH -n 4
-#SBATCH -N 8
-#SBATCH -t 01:00:00
+#SBATCH -n 16
+#SBATCH -N 1
+#SBATCH -t 05:00:00
 #SBATCH --mem=64GB
 #SBATCH --job-name jupyter
 #SBATCH --output jupyter-log-%J.txt
@@ -12,7 +12,7 @@ module load python/gnu/3.7.3
 source ../../../Scripts/venv-urban/bin/activate
 
 XDG_RUNTIME_DIR=""
-ipnport=8193
+ipnport=$(shuf -i8000-9999 -n1)
 ipnip=$(hostname -i)
 
 echo -e "\n"
