@@ -38,7 +38,7 @@ from spacy.tokens import Doc, Token
 
 try:
     from nltk.corpus import stopwords
-    from nltk.stem import PorterStemmer, WordNetLemmatizer
+    # from nltk.stem import PorterStemmer, WordNetLemmatizer
 except ImportError:
     warnings.warn(
         'nltk could not be imported, some features will be unavailable')
@@ -340,10 +340,10 @@ class CrazyTokenizer(object):
                  remove_numbers = False,
                  pos_emojis=None, neg_emojis=None, neutral_emojis=None,
                  print_url_warnings=False, latin_chars_fix=False,
-                 ngrams=1, nlp_words = None):
+                 ngrams=1, wordnetlem = None, porterstem = None):
         self.params = locals()
 
-        self._nlp = nlp_words
+        self._nlp = English()
         self._merging_matcher = Matcher(self._nlp.vocab)
         self._matcher = Matcher(self._nlp.vocab)
 
@@ -534,9 +534,9 @@ class CrazyTokenizer(object):
 
         if stem and ('nltk' in sys.modules):
             if stem == 'stem':
-                self._stemmer = PorterStemmer()
+                self._stemmer = porterstem
             elif stem == 'lemm':
-                self._stemmer = WordNetLemmatizer()
+                self._stemmer = wordnetlem
             else:
                 raise ValueError(
                     'Stemming method {} is not supported'.format(stem))
