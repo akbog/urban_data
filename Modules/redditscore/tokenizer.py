@@ -31,7 +31,7 @@ import tldextract
 from bs4 import BeautifulSoup
 from eventlet.green.urllib.request import urlopen
 from eventlet.timeout import Timeout
-from redditscore.models.redditmodel import word_ngrams
+from .redditscore.models.redditmodel import word_ngrams
 from spacy.lang.en import English
 from spacy.matcher import Matcher
 from spacy.tokens import Doc, Token
