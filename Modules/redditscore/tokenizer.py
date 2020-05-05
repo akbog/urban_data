@@ -35,6 +35,8 @@ from .models.redditmodel import word_ngrams
 from spacy.lang.en import English
 from spacy.matcher import Matcher
 from spacy.tokens import Doc, Token
+from nltk.corpus.reader.wordnet import NOUN
+
 
 try:
     from nltk.corpus import stopwords
@@ -340,7 +342,7 @@ class CrazyTokenizer(object):
                  remove_numbers = False,
                  pos_emojis=None, neg_emojis=None, neutral_emojis=None,
                  print_url_warnings=False, latin_chars_fix=False,
-                 ngrams=1, wordnetlem = None, porterstem = None):
+                 ngrams=1, wordnet = None, porterstem = None):
         self.params = locals()
 
         self._nlp = English()
@@ -351,6 +353,7 @@ class CrazyTokenizer(object):
         self._domains = {}
         self._realnames = {}
         self._stopwords = None
+        self.wordnet = wordnet
 
         alpha_digits_flag = self._nlp.vocab.add_flag(alpha_digits_check)
         hashtag_flag = self._nlp.vocab.add_flag(hashtag_check)
@@ -536,7 +539,8 @@ class CrazyTokenizer(object):
             if stem == 'stem':
                 self._stemmer = porterstem
             elif stem == 'lemm':
-                self._stemmer = wordnetlem
+                # self._stemmer = wordnetlem
+                pass
             else:
                 raise ValueError(
                     'Stemming method {} is not supported'.format(stem))
@@ -571,8 +575,12 @@ class CrazyTokenizer(object):
                 tok._.transformed_text = self._stemmer.stem(
                     tok._.transformed_text)
             elif self.params['stem'] == 'lemm':
-                tok._.transformed_text = self._stemmer.lemmatize(
+                tok._.transformed_text = self.lemmatize(
                     tok._.transformed_text)
+
+    def lemmatize(self, word, pos=NOUN):
+        lemmas = self.wordnet._morphy(word, pos)
+        return min(lemmas, key=len) if lemmas else word
 
     def _normalize(self, __, doc, i, matches):
         # Normalize repeating symbols
