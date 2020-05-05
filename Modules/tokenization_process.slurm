@@ -2,7 +2,7 @@
 #SBATCH -p parallel
 #SBATCH -n 16
 #SBATCH -N 1
-#SBATCH -t 05:00:00
+#SBATCH -t 1-00:00
 #SBATCH --mem=64GB
 #SBATCH -o tokenjob.o
 #SBATCH -e tokenjob.e
