@@ -340,10 +340,10 @@ class CrazyTokenizer(object):
                  remove_numbers = False,
                  pos_emojis=None, neg_emojis=None, neutral_emojis=None,
                  print_url_warnings=False, latin_chars_fix=False,
-                 ngrams=1):
+                 ngrams=1, nlp_words = None):
         self.params = locals()
 
-        self._nlp = English()
+        self._nlp = nlp_words
         self._merging_matcher = Matcher(self._nlp.vocab)
         self._matcher = Matcher(self._nlp.vocab)
 
