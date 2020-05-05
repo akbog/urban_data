@@ -12,7 +12,7 @@ module load python/gnu/3.7.3
 source ../../../Scripts/venv-urban/bin/activate
 
 XDG_RUNTIME_DIR=""
-ipnport=$(shuf -i8000-9999 -n1)
+ipnport=8193
 ipnip=$(hostname -i)
 
 echo -e "\n"
