@@ -32,9 +32,9 @@ def tokenize(partition):
     print("Tokenization Finished for {}. Took {} seconds.".format(partition_name, end-start))
 
 if __name__ == "__main__":
-    c = Client(processes = True)
-    # c = Client()
-    print(c)
-    filters = [[("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 8)],[("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 9)],[("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 10)],[("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 11)], [("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 12)], [("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 13)], [("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 14)]]
-    data = dd.read_parquet(DATA_DIR, filters = filters)
+    # c = Client(processes = True)
+    c = Client()
+    # filters = [[("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 8)],[("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 9)],[("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 10)],[("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 11)], [("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 12)], [("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 13)], [("tw_year", "=", 2020), ("tw_month", "=", 4), ("tw_day", "=", 14)]]
+    # data = dd.read_parquet(DATA_DIR, filters = filters)
+    data = dd.read_parquet(DATA_DIR)
     data.map_partitions(tokenize).compute()
