@@ -31,7 +31,7 @@ def iterate_chunks(input_file, output_file):
 
 def build_directory(input_file, output_directory):
     print("Building Parquet Output Directory: ", end = "")
-    wd_types = {'id' : 'int64', 'user_id' : 'int64', 'full_text' : str,'tw_year' : 'int64', 'tw_month' : 'int64', 'tw_day' : 'int64'}
+    wd_types = {'id' : 'int64', 'user_id' : 'int64', 'full_text' : 'object','tw_year' : 'int64', 'tw_month' : 'int64', 'tw_day' : 'int64'}
     with_days_csv = pd.read_csv(input_file, header = 0, dtype = wd_types, parse_dates = ['created'], lineterminator = "\n")
     table = pa.Table.from_pandas(with_days_csv)
     pq.write_to_dataset(table, root_path = output_directory, partition_cols=['tw_year', 'tw_month', 'tw_day'])
