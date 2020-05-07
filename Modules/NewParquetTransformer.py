@@ -19,6 +19,42 @@ import sqlalchemy as db
 
 DATABASE_URL = "postgres+psycopg2://bogdanowicz:urbandata@localhost:5432/twitter"
 
+class TextNormalizer(BaseEstimator, TransformerMixin):
+
+    def __init__(self, language='english'):
+        pass
+
+    def is_url(self, token):
+        url_pattern = re.compile(r'https?://\S+|www\.\S+')
+        return bool(re.match(url_pattern, token))
+
+    def is_emoji(self, token):
+        emoji_pattern = re.compile("["
+                               u"\U0001F600-\U0001F64F"  # emoticons
+                               u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                               u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                               u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                               u"\U00002702-\U000027B0"
+                               u"\U000024C2-\U0001F251"
+                               "]+", flags=re.UNICODE)
+        return bool(re.match(emoji_pattern, token))
+
+    def normalize(self, document):
+        return [
+            token
+            for token in document
+            if not self.is_url(token) and not self.is_emoji(token)
+        ]
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, documents):
+        return [
+            self.normalize(document)
+            for document in documents
+        ]
+
 class GensimTfidfVectorizer(BaseEstimator, TransformerMixin):
 
     def __init__(self, dirpath=".", tofull=False):
@@ -64,11 +100,11 @@ class GensimTopicModels(object):
         self.documents = documents
         self.n_topics = n_topics
         self.model = Pipeline([
+            ('norm', TextNormalizer()),
             ('vect', GensimTfidfVectorizer()),
             ('model', LdaSeqTransformer(time_slice = time_slices, num_topics = self.n_topics, initialize = "gensim"))
         ])
 
     def fit(self):
-        documents = [tweet for tweet in self.documents]
-        self.model.fit(documents)
+        self.model.fit(self.documents)
         return self.model
