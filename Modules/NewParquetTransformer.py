@@ -97,7 +97,7 @@ class GensimTfidfVectorizer(BaseEstimator, TransformerMixin):
 class GensimTopicModels(object):
 
     def __init__(self, corpus, time_slices, n_topics=50):
-        self.documents = documents
+        self.documents = corpus
         self.n_topics = n_topics
         self.model = Pipeline([
             ('norm', TextNormalizer()),
