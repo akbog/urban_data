@@ -60,15 +60,15 @@ class GensimTfidfVectorizer(BaseEstimator, TransformerMixin):
 
 class GensimTopicModels(object):
 
-    def __init__(self, corpus, n_topics=50):
-        self.corpus = corpus
+    def __init__(self, corpus, time_slices, n_topics=50):
+        self.documents = documents
         self.n_topics = n_topics
         self.model = Pipeline([
             ('vect', GensimTfidfVectorizer()),
-            ('model', LdaSeqTransformer(time_slice = self.corpus.time_slices(), num_topics = self.n_topics, initialize = "gensim"))
+            ('model', LdaSeqTransformer(time_slice = time_slices, num_topics = self.n_topics, initialize = "gensim"))
         ])
 
     def fit(self):
-        documents = [tweet for tweet in self.corpus.getTokenText()]
+        documents = [tweet for tweet in self.documents]
         self.model.fit(documents)
         return self.model
