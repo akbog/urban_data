@@ -3,6 +3,8 @@ import nltk
 import gensim
 import boto
 import unicodedata
+import re
+# import pkg_resources
 
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
@@ -12,16 +14,20 @@ from gensim.models.tfidfmodel import TfidfModel
 from gensim.sklearn_api import lsimodel, ldamodel
 from gensim.sklearn_api.ldaseqmodel import LdaSeqTransformer
 from datetime import datetime, timedelta
-
-from sqlalchemy.orm import sessionmaker
 from .models import *
-import sqlalchemy as db
+# from symspellpy import SymSpell, Verbosity
 
 DATABASE_URL = "postgres+psycopg2://bogdanowicz:urbandata@localhost:5432/twitter"
 
 class TextNormalizer(BaseEstimator, TransformerMixin):
 
     def __init__(self, language='english'):
+        # self.sym_spell = SymSpell(max_dictionary_edit_distance=2, prefix_length=7)
+        # self.dictionary_path = pkg_resources.resource_filename("symspellpy", "frequency_dictionary_en_82_765.txt")
+        # self.sym_spell.load_dictionary(dictionary_path, term_index=0, count_index=1)
+        pass
+
+    def spell_correct(self, token):
         pass
 
     def is_url(self, token):
