@@ -73,7 +73,6 @@ class GensimTfidfVectorizer(BaseEstimator, TransformerMixin):
         self.load()
 
     def load(self):
-
         if os.path.exists(self._lexicon_path):
             self.lexicon = Dictionary.load(self._lexicon_path)
 
