@@ -1,5 +1,4 @@
 import os
-import nltk
 import gensim
 import boto
 import unicodedata
