@@ -9,5 +9,5 @@
 
 module purge
 module load python/gnu/3.7.3
-source ../../../Scripts/venv-urban/bin/activate
+source Scripts/venv-urban/bin/activate
 python3 LDAModelScript.py
