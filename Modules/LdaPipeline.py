@@ -28,6 +28,7 @@ class TextNormalizer(BaseEstimator, TransformerMixin):
         self.include_bigram = include_bigram
         self._bigram_model_path = os.path.join(dirpath, bigram_path)
         self.bigram_mod = None
+        self.load_bigram()
 
     def load_bigram(self):
         if os.path.exists(self._bigram_model_path):
@@ -71,9 +72,10 @@ class TextNormalizer(BaseEstimator, TransformerMixin):
 
     def fit(self, X, y=None):
         if self.include_bigram:
-            phrases = gensim.models.Phrases(X, threshold = 0.3, scoring = "npmi")
-            self.bigram_mod = gensim.models.phrases.Phraser(phrases)
-            self.bigram_mod.save("bigram_model.pkl")
+            if not self.bigram_mod:
+                phrases = gensim.models.Phrases(X, threshold = 0.3, scoring = "npmi")
+                self.bigram_mod = gensim.models.phrases.Phraser(phrases)
+                self.bigram_mod.save("bigram_model.pkl")
         return self
 
     def get_bigrams(self, document):
@@ -94,8 +96,8 @@ class TextNormalizer(BaseEstimator, TransformerMixin):
 class GensimTfidfVectorizer(BaseEstimator, TransformerMixin):
 
     def __init__(self, dirpath=".", tofull=False):
-        self._lexicon_path = os.path.join(dirpath, "corpus_mass_u.dict")
-        self._tfidf_path = os.path.join(dirpath, "tfidf_mass_u.model")
+        self._lexicon_path = os.path.join(dirpath, "corpus_test.dict")
+        self._tfidf_path = os.path.join(dirpath, "tfidf_test.model")
         self.lexicon = None
         self.tfidf = None
         self.tofull = tofull
@@ -173,8 +175,9 @@ class GensimOneHotVectorizer(BaseEstimator, TransformerMixin):
         self.id2word.save(self.path)
 
     def fit(self, documents, labels = None):
-        self.id2word = Dictionary(documents)
-        self.save()
+        if not self.id2word:
+            self.id2word = Dictionary(documents)
+            self.save()
         return self
 
     def transform(self, documents):
@@ -193,7 +196,7 @@ class GensimTopicModels(object):
         self.n_topics = n_topics
         self.model = Pipeline([
             ('norm', TextNormalizer(include_bigram = include_bigram, bigram_path = bigram_path, stopwords = stopwords)),
-            ('vect', GensimVectorizer()),
+            ('vect', GensimOneHotVectorizer()),
             ('model', ldamodel.LdaTransformer(num_topics = self.n_topics, update_every=update_every, passes = passes, alpha = alpha, scorer = scorer))
         ])
         self.search = None
