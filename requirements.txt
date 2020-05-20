@@ -42,7 +42,7 @@ geographiclib==1.50
 geopy==1.21.0
 google-compute-engine==2.8.13
 greenlet==0.4.15
-httplib2==0.17.2
+httplib2==0.18.0
 idna==2.9
 importlib-metadata==1.6.0
 ipykernel==5.2.0
