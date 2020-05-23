@@ -101,7 +101,6 @@ class GensimTfidfVectorizer(BaseEstimator, TransformerMixin):
         self.lexicon = None
         self.tfidf = None
         self.tofull = tofull
-
         self.load()
 
     def load(self):
@@ -191,6 +190,26 @@ class GensimOneHotVectorizer(BaseEstimator, TransformerMixin):
         return list(generator())
 
 class GensimTopicModels(object):
+
+    def __init__(self, n_topics=100, update_every = 0, passes = 1, alpha = "auto", scorer = "perplexity", include_bigram = False, bigram_path = "", stopwords = []):
+        self.n_topics = n_topics
+        self.model = Pipeline([
+            ('norm', TextNormalizer(include_bigram = include_bigram, bigram_path = bigram_path, stopwords = stopwords)),
+            ('vect', GensimOneHotVectorizer()),
+            ('model', ldamodel.LdaTransformer(num_topics = self.n_topics, update_every=update_every, passes = passes, alpha = alpha, scorer = scorer))
+        ])
+        self.search = None
+
+    def fit(self, documents):
+        self.model.fit(documents)
+        return self.model
+
+    def GridSearchFit(self, documents, param_grid, n_jobs = -1):
+        self.search = GridSearchCV(self.model, param_grid = param_grid, n_jobs = n_jobs)
+        self.search.fit(documents)
+        return self.search
+
+class GensimDynamicTopicModels(object):
 
     def __init__(self, n_topics=100, update_every = 0, passes = 1, alpha = "auto", scorer = "perplexity", include_bigram = False, bigram_path = "", stopwords = []):
         self.n_topics = n_topics
