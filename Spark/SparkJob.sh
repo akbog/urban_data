@@ -7,4 +7,7 @@
 #SBATCH --job-name spark-test
 #SBATCH --output spark-log-%J.txt
 
+module purge
+module load anaconda3/5.2.0 spark
+spark-start
 spark-submit SparkJob.py
