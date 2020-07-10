@@ -8,6 +8,7 @@
 #SBATCH --output spark-log-%J.txt
 
 module purge
+module load java/1.8.0_131
 module load spark/2.3.0
-spark-start
+echo $JAVA_HOME
 spark-submit SparkJob.py
