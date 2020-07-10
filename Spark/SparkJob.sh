@@ -11,4 +11,4 @@ module purge
 module load java/1.8.0_131
 module load anaconda3/5.2.0 spark
 echo $JAVA_HOME
-spark-submit SparkJob.py
+spark-submit SparkJob.py abctext.txt
