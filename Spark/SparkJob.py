@@ -15,6 +15,8 @@ if __name__ == "__main__":
     spark = sparknlp.start()
     sqlCtx = SQLContext(spark)
     spark.sparkContext.setLogLevel('ERROR')
+    print(spark.driver.memoryOverhead)
+    print(spark.executor.memoryOverhead)
     #Setting input Directory
     input_file = "../../../Tweets_Sorted/2020_3_31/"
     twitter = sqlCtx.read.json(input_file)
