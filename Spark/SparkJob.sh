@@ -8,6 +8,6 @@
 #SBATCH --output spark-log-%J.txt
 
 module purge
-module load anaconda3/5.2.0 spark
+module load spark/2.3.0
 spark-start
 spark-submit SparkJob.py
