@@ -16,7 +16,7 @@ if __name__ == "__main__":
     sqlCtx = SQLContext(spark)
     spark.sparkContext.setLogLevel('ERROR')
     #Setting input Directory
-    input_file = "../../../Tweets_Sorted/[0-9][0-9][0-9][0-9]_[0-9]_([0-9][0-9]|[0-9])"
+    input_file = "../../../Tweets_Sorted/2020_3_31/"
     twitter = sqlCtx.read.json(input_file)
     twitter.registerTempTable("tweets")
     print("Number of Tweets:", twitter.count())
