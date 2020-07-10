@@ -11,5 +11,12 @@ from pyspark.ml import Pipeline
 
 
 if __name__ == "__main__":
+    #Launching Spark
     spark = sparknlp.start()
-    print("Submitted")
+    sqlCtx = SQLContext(spark)
+    spark.sparkContext.setLogLevel('ERROR')
+    #Setting input Directory
+    input_file = "../../../Tweets_Sorted/"
+    twitter = sqlCtx.read.json(input_file)
+    twitter.registerTempTable("tweets")
+    print("Number of Tweets:", twitter.count())
