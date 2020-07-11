@@ -27,4 +27,5 @@ if __name__ == "__main__":
     input_file = "../../../Tweets_Sorted/2020_3_31/"
     twitter = sqlCtx.read.json(input_file)
     twitter.registerTempTable("tweets")
+    print("Reached Here")
     print("Number of Tweets:", twitter.count())
