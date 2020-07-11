@@ -17,7 +17,7 @@ if __name__ == "__main__":
     spark = SparkSession.builder \
         .appName("Spark NLP")\
         .master("local[*]")\
-        .config("spark.driver.memory","60G")\
+        .config("spark.driver.memory","256G")\
         .config("spark.jars.packages", "com.johnsnowlabs.nlp:spark-nlp_2.11:2.5.3")\
         .config("spark.kryoserializer.buffer.max", "1000M")\
         .getOrCreate()
