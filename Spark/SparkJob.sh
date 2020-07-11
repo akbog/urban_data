@@ -12,4 +12,4 @@ module load java/1.8.0_131
 module load anaconda3/5.2.0 spark
 source ../../../Scripts/venv-urban/bin/activate
 echo $JAVA_HOME
-spark-submit --total-executor-cores 64 --executor-memory 10G SparkJob.py
+spark-submit --total-executor-cores 64 --executor-memory 200G SparkJob.py

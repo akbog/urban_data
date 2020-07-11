@@ -13,14 +13,14 @@ from pyspark.ml import Pipeline
 
 if __name__ == "__main__":
     #Launching Spark
-    # spark = sparknlp.start()
-    spark = SparkSession.builder \
-        .appName("Spark NLP")\
-        .master("local[*]")\
-        .config("spark.driver.memory","256G")\
-        .config("spark.jars.packages", "com.johnsnowlabs.nlp:spark-nlp_2.11:2.5.3")\
-        .config("spark.kryoserializer.buffer.max", "1000M")\
-        .getOrCreate()
+    spark = sparknlp.start()
+    # spark = SparkSession.builder \
+    #     .appName("Spark NLP")\
+    #     .master("local[*]")\
+    #     .config("spark.driver.memory","256G")\
+    #     .config("spark.jars.packages", "com.johnsnowlabs.nlp:spark-nlp_2.11:2.5.3")\
+    #     .config("spark.kryoserializer.buffer.max", "1000M")\
+    #     .getOrCreate()
     sqlCtx = SQLContext(spark)
     spark.sparkContext.setLogLevel('ERROR')
     #Setting input Directory
