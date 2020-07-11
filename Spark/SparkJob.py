@@ -15,16 +15,16 @@ import time
 
 if __name__ == "__main__":
     #Launching Spark
-    # spark = sparknlp.start()
-    get_ip = sys.argv[1]
-    get_port = sys.argv[2]
-    spark = SparkSession.builder \
-        .appName("Spark NLP")\
-        .master("{}:{}".format(get_ip, get_port))\
-        .config("spark.driver.memory","200G")\
-        .config("spark.jars.packages", "com.johnsnowlabs.nlp:spark-nlp_2.11:2.5.3")\
-        .config("spark.kryoserializer.buffer.max", "1000M")\
-        .getOrCreate()
+    spark = sparknlp.start()
+    # get_ip = sys.argv[1]
+    # get_port = sys.argv[2]
+    # spark = SparkSession.builder \
+    #     .appName("Spark NLP")\
+    #     .master("local[*]".format(get_ip, get_port))\
+    #     .config("spark.driver.memory","200G")\
+    #     .config("spark.jars.packages", "com.johnsnowlabs.nlp:spark-nlp_2.11:2.5.3")\
+    #     .config("spark.kryoserializer.buffer.max", "1000M")\
+    #     .getOrCreate()
     print("here")
     while(True):
         time.sleep(100)
