@@ -13,7 +13,7 @@ from pyspark.ml import Pipeline
 
 if __name__ == "__main__":
     #Launching Spark
-    spark = sparknlp.start()
+    # spark = sparknlp.start()
     spark = SparkSession.builder \
         .appName("Spark NLP")\
         .master("local[*]")\
