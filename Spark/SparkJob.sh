@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -p parallel
 #SBATCH -n 32
-#SBATCH -N 2
+#SBATCH -N 1
 #SBATCH -t 2-00:00
-#SBATCH --mem=256GB
+#SBATCH --mem=128GB
 #SBATCH --job-name spark-test
 #SBATCH --output spark-log-%J.txt
 
@@ -17,6 +17,7 @@ echo $JAVA_HOME
 XDG_RUNTIME_DIR=""
 ipnport=$(shuf -i8000-9999 -n1)
 ipnip=$(hostname -i)
+Master="local[*]"
 echo -e "  ssh -N -L $ipnport:$ipnip:$ipnport $USER@hpc.shanghai.nyu.edu\n"
 echo -e "  localhost:$ipnport                                      \n\n"
-spark-submit --master spark://$ipnip:$ipnport --total-executor-cores 64 --executor-memory 200G SparkJob.py
+spark-submit --master $Master --total-executor-cores 64 --executor-memory 200G SparkJob.py
