@@ -18,4 +18,5 @@ ipnport=$(shuf -i8000-9999 -n1)
 ipnip=$(hostname -i)
 echo -e "  ssh -N -L $ipnport:$ipnip:$ipnport $USER@hpc.shanghai.nyu.edu\n"
 echo -e "  localhost:$ipnport                                      \n\n"
-spark-submit --total-executor-cores 64 --executor-memory 200G --ip $ipnip --port $ipnport SparkJob.py 
+spark-start --ip $ipnip --port $ipnport
+spark-submit --total-executor-cores 64 --executor-memory 200G SparkJob.py 
