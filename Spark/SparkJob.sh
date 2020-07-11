@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p parallel
-#SBATCH -n 32
+#SBATCH -n 16
 #SBATCH -N 1
 #SBATCH -t 2-00:00
 #SBATCH --mem=64GB
