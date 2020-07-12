@@ -16,6 +16,7 @@ import time
 if __name__ == "__main__":
     #Launching Spark
     spark = sparknlp.start()
+    spark
     # get_ip = sys.argv[1]
     # get_port = sys.argv[2]
     # spark = SparkSession.builder \
