@@ -15,6 +15,5 @@ source ../../../Scripts/venv-urban/bin/activate
 
 ipnip=$(hostname -i)
 echo -e "  ssh -N -L 4040:$ipnip:4040 $USER@hpc.shanghai.nyu.edu\n"
-echo -e "  localhost:$ipnport                                      \n\n"
 
 spark-submit SparkJob.py
