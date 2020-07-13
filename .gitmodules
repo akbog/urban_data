@@ -1,3 +1,6 @@
 [submodule "Modules/RedditScore"]
 	path = Modules/RedditScore
 	url = https://github.com/crazyfrogspb/RedditScore.git
+[submodule "Spark/Spark/Magpie/magpie"]
+	path = Spark/Spark/Magpie/magpie
+	url = https://github.com/LLNL/magpie.git
