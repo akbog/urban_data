@@ -4,3 +4,6 @@
 [submodule "Spark/Spark/Magpie/magpie"]
 	path = Spark/Spark/Magpie/magpie
 	url = https://github.com/LLNL/magpie.git
+[submodule "Spark/magpie"]
+	path = Spark/magpie
+	url = https://github.com/LLNL/magpie.git
