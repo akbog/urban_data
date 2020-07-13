@@ -40,7 +40,7 @@
 # more comfortable specifying these on the command line, feel free to
 # delete the customizations below.
 
-#SBATCH --nodes=5
+#SBATCH --nodes=2
 #SBATCH --output="slurm-%j.out"
 
 # Note defaults of MAGPIE_STARTUP_TIME & MAGPIE_SHUTDOWN_TIME, this
