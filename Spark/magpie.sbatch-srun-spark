@@ -71,14 +71,14 @@ export MAGPIE_SUBMISSION_TYPE="sbatchsrun"
 # Directory your launching scripts/files are stored
 #
 # Normally an NFS mount, someplace magpie can be reached on all nodes.
-export MAGPIE_SCRIPTS_HOME="magpie"
+export MAGPIE_SCRIPTS_HOME="/tmp/hsperfdata_akb523/magpie"
 
 # Path to store data local to each cluster node, typically something
 # in /tmp.  This will store local conf files and log files for your
 # job.  If local scratch space is not available, consider using the
 # MAGPIE_NO_LOCAL_DIR option.  See README for more details.
 #
-export MAGPIE_LOCAL_DIR="/tmp/hsperfdata_akb523/magpie"
+export MAGPIE_LOCAL_DIR="/tmp/hsperfdata_akb523/magpie_temp"
 
 # Magpie job type
 #
