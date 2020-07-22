@@ -7,7 +7,7 @@
 
 #SBATCH --job-name=sparktest
 
-#SBATCH --partition=serial
+#SBATCH --partition=parallel
 
 #SBATCH --ntasks-per-node=16
 #SBATCH --exclusive
