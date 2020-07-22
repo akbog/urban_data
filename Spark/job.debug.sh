@@ -7,7 +7,7 @@
 
 #SBATCH --job-name=sparktest
 
-#SBATCH --partition=debug
+#SBATCH --partition=aquila
 
 #SBATCH --ntasks-per-node=2
 #SBATCH --exclusive
