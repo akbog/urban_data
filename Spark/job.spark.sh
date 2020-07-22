@@ -1,9 +1,9 @@
 #!/bin/sh
 
-#SBATCH --nodes=1
+#SBATCH --nodes=2
 #SBATCH --output="slurm-%j.out"
 
-# SBATCH -t 0-12:00
+# SBATCH -t 2-00:00
 
 #SBATCH --job-name=sparktest
 
