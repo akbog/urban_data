@@ -1,15 +1,15 @@
 #!/bin/sh
 
-#SBATCH --nodes=1
+#SBATCH --nodes=2
 #SBATCH --output="slurm-%j.out"
 
-#SBATCH --time=01:30:00
+#SBATCH -t 1-00:00
 
 #SBATCH --job-name=sparktest
 
-#SBATCH --partition=aquila
+#SBATCH --partition=parallel
 
-#SBATCH --ntasks-per-node=2
+#SBATCH --ntasks-per-node=16
 #SBATCH --exclusive
 #SBATCH --no-kill
 
@@ -321,5 +321,4 @@ srun --no-kill -W 0 $MAGPIE_SCRIPTS_HOME/magpie-run
 srun --no-kill -W 0 $MAGPIE_SCRIPTS_HOME/magpie-cleanup
 srun --no-kill -W 0 $MAGPIE_SCRIPTS_HOME/magpie-post-run
 
-rm -rf /tmp/${USER}/magpie
 rm -rf /tmp/${USER}/spark
