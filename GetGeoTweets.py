@@ -97,7 +97,7 @@ if __name__=="__main__":
                                     (~col("place").isNull()) | (~col("retweeted_status.place").isNull()) | (~col("quoted_status.place").isNull()) |
                                     (~col("coordinates").isNull()) | (~col("retweeted_status.coordinates").isNull()) | (~col("quoted_status.coordinates").isNull()))
             final.write.option("compression", "gzip").json(os.path.join(output_path, file_name))
-            print("Process Completed in ({:.2f}) minutes".format((datetime.datetime.now() - start_time).seconds/60))
+            print("Process Completed in ({:.2f}) minutes".format((datetime.now() - start_time).seconds/60))
         except Exception:
             print("\n!-Encountered Unexpected Issue-! (Resetting)")
             #Logging Issues Here
