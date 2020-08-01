@@ -10,7 +10,7 @@ from datetime import date, datetime
 
 
 def get_list(dir_path):
-    folders = [datetime.strptime(folder, "%Y_%m_%d") for folder in os.listdir(dir_path)]
+    folders = [datetime.strptime(folder, "%Y_%m_%d") for folder in os.listdir(dir_path) if len(folder) == 10]
     folders.sort()
     return [os.path.join(dir_path, folder.strptime("%Y_%m_%d")) for folder in folders]
 
