@@ -2,6 +2,7 @@ import os
 import sys
 import traceback
 import pyspark
+import time
 import pyspark.sql.functions as f
 from pyspark.sql import SQLContext
 from pyspark.sql import Window
@@ -30,6 +31,20 @@ if __name__=="__main__":
         output_path = sys.argv[2]
     except:
         output_path = "../../SparkNLP"
+    try:
+        if sys.argv[3] == "filter_tweets":
+            filter_tweets = True
+        else:
+            filter_tweets = False
+    except:
+        filter_tweets = True
+    try:
+        if sys.argv[4] == "filter_users":
+            filter_user = True
+        else:
+            filter_user = False
+    except:
+        filter_user = True
     dir_days = get_list(dir_path)
     for folder in dir_days:
         start = datetime.now()
