@@ -48,7 +48,7 @@ if __name__=="__main__":
         filter_users = True
     dir_days = get_list(dir_path)
     for folder in dir_days:
-        start = datetime.now()
+        start_time = datetime.now()
         file_name = folder.replace(dir_path + "/", "")
         try:
             print("[{}] Reading in Directory: ".format(start.strftime("%Y-%m-%d %H:%m:%S")), file_name, end = "| ")
