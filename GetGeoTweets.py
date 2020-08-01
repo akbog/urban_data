@@ -52,7 +52,7 @@ if __name__=="__main__":
         start_time = datetime.now()
         file_name = folder.replace(dir_path + "/", "")
         try:
-            print("[{}] Reading in Directory: ".format(start.strftime("%Y-%m-%d %H:%m:%S")), file_name, end = "| ")
+            print("[{}] Reading in Directory: ".format(start_time.strftime("%Y-%m-%d %H:%m:%S")), file_name, end = "| ")
             twitter = sqlCtx.read.json(folder)
             twitter.registerTempTable("tweets")
             print("(Completed)", end = "\n\t")
