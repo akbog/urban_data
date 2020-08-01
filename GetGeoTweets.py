@@ -56,11 +56,11 @@ if __name__=="__main__":
             print("[{}] Reading in Directory: ".format(start_time.strftime("%Y-%m-%d %H:%m:%S")), file_name, end = "| ")
             twitter = sqlCtx.read.json(folder)
             twitter.registerTempTable("tweets")
-            print("(Completed)", end = "\n\t")
+            print("(Completed)", end = "\n")
             #Cleaning up empty/useless tweets
             twitter = twitter.where(~col("id").isNull())
             if filter_tweets:
-                print("(Filtering to root{n})", end = "| ")
+                print("\t(Filtering to root{n})", end = "| ")
                 retweets = twitter.groupBy("retweeted_status.id").count().orderBy(col("count").desc())
                 w = Window.partitionBy('retweeted_status.id').orderBy('retweeted_status.id')
                 rt_count = twitter.withColumn('mono_id', f.row_number().over(w))
@@ -94,15 +94,15 @@ if __name__=="__main__":
                 urt_root = root_filt
             else:
                 urt_root = twitter
-            print("(Retaining Geo Tweets)", end = "\n\t")
+            print("(Retaining Geo Tweets)", end = "\n")
             final = urt_root.where((~col("geo").isNull()) | (~col("retweeted_status.geo").isNull()) | (~col("quoted_status.geo").isNull()) |
                                     (~col("place").isNull()) | (~col("retweeted_status.place").isNull()) | (~col("quoted_status.place").isNull()) |
                                     (~col("coordinates").isNull()) | (~col("retweeted_status.coordinates").isNull()) | (~col("quoted_status.coordinates").isNull()))
             final.write.option("compression", "gzip").json(os.path.join(output_path, file_name))
-            print("Process Completed in ({:.2f}) minutes".format((datetime.now() - start_time).seconds/60))
+            print("\tProcess Completed in ({:.2f}) minutes".format((datetime.now() - start_time).seconds/60))
             running_former = running_total
             running_total += final.count()
-            print("# of Tweets Added: ", running_total - running_former, "(Total:{})".format(running_total))
+            print("\t# of Tweets Added: ", running_total - running_former, "(Total:{})".format(running_total))
         except Exception:
             print("\n!-Encountered Unexpected Issue-! (Skipping: {})".format(file_name))
             log_list.append(file_name)
