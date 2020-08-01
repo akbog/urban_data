@@ -27,11 +27,11 @@ if __name__=="__main__":
     try:
         dir_path = sys.argv[1]
     except:
-        dir_path = "../../SparkNLP/GeoTaggedTweets"
+        dir_path = "../../SparkNLP/Tweets"
     try:
         output_path = sys.argv[2]
     except:
-        output_path = "../../SparkNLP"
+        output_path = "../../SparkNLP/GeoTaggedTweets"
     try:
         if sys.argv[3] == "filter_tweets":
             filter_tweets = True
@@ -108,4 +108,4 @@ if __name__=="__main__":
             log_list.append(file_name)
             traceback.print_exc()
             time.sleep(10)
-    print("Errors Occured in: ", log_list)
+    print("\tErrors Occured in: ", log_list)
