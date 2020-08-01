@@ -47,6 +47,7 @@ if __name__=="__main__":
     except:
         filter_users = True
     dir_days = get_list(dir_path)
+    log_list = []
     running_total = 0
     for folder in dir_days:
         start_time = datetime.now()
@@ -103,7 +104,8 @@ if __name__=="__main__":
             running_total += final.count()
             print("# of Tweets Added: ", running_total - running_former, "(Total:{})".format(running_total))
         except Exception:
-            print("\n!-Encountered Unexpected Issue-! (Resetting)")
-            #Logging Issues Here
+            print("\n!-Encountered Unexpected Issue-! (Skipping: {})".format(file_name))
+            log_list.append(file_name)
             traceback.print_exc()
             time.sleep(10)
+    print("Errors Occured in: ", log_list)
