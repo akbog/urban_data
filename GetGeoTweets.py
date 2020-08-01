@@ -20,11 +20,11 @@ if __name__=="__main__":
     try:
         dir_path = sys.argv[1]
     except:
-        dir_path = "Tweets"
+        dir_path = "../../SparkNLP/GeoTaggedTweets"
     try:
         output_path = sys.argv[2]
     except:
-        output_path = "GeoTaggedTweets"
+        output_path = "../../SparkNLP"
     dir_days = get_list(dir_path)
     for folder in dir_days:
         start = datetime.now()
