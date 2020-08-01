@@ -22,6 +22,7 @@ if __name__=="__main__":
     pyspark_submit_args = ' --driver-memory ' + memory + ' pyspark-shell'
     os.environ["PYSPARK_SUBMIT_ARGS"] = pyspark_submit_args
     sc = pyspark.SparkContext()
+    sc.setLogLevel("WARN")
     sqlCtx = SQLContext(sc)
     try:
         dir_path = sys.argv[1]
@@ -40,11 +41,11 @@ if __name__=="__main__":
         filter_tweets = True
     try:
         if sys.argv[4] == "filter_users":
-            filter_user = True
+            filter_users = True
         else:
-            filter_user = False
+            filter_users = False
     except:
-        filter_user = True
+        filter_users = True
     dir_days = get_list(dir_path)
     for folder in dir_days:
         start = datetime.now()
