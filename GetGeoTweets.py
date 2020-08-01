@@ -47,6 +47,7 @@ if __name__=="__main__":
     except:
         filter_users = True
     dir_days = get_list(dir_path)
+    running_total = 0
     for folder in dir_days:
         start_time = datetime.now()
         file_name = folder.replace(dir_path + "/", "")
@@ -98,9 +99,11 @@ if __name__=="__main__":
                                     (~col("coordinates").isNull()) | (~col("retweeted_status.coordinates").isNull()) | (~col("quoted_status.coordinates").isNull()))
             final.write.option("compression", "gzip").json(os.path.join(output_path, file_name))
             print("Process Completed in ({:.2f}) minutes".format((datetime.now() - start_time).seconds/60))
+            running_former = running_total
+            running_total += final.count()
+            print("# of Tweets Added: ", running_total - running_former, "(Total:{})".format(running_total))
         except Exception:
             print("\n!-Encountered Unexpected Issue-! (Resetting)")
             #Logging Issues Here
             traceback.print_exc()
             time.sleep(10)
-            print("Number of Tweets Remaining: ", urt_root.count())
