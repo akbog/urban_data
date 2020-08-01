@@ -63,7 +63,6 @@ if __name__=="__main__":
                 w = Window.partitionBy('retweeted_status.id').orderBy('retweeted_status.id')
                 rt_count = twitter.withColumn('mono_id', f.row_number().over(w))
                 root_filt = rt_count.withColumn('rt_count', f.max('mono_id').over(w)).where((f.col('mono_id') <= f.ceil(f.sqrt('rt_count'))) | (f.col('retweeted_status.id').isNull()))
-                root_filt.select("retweeted_status.id", "mono_id").orderBy(col("retweeted_status.id").desc()).show(10)
                 root_filt = root_filt.drop("rt_count").drop("mono_id")
             if filter_users:
                 print("(Removing Suspicious Users)", end = "| ")
