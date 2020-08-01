@@ -15,6 +15,11 @@ def get_list(dir_path):
     return [os.path.join(dir_path, folder.strptime("%Y_%m_%d")) for folder in folders]
 
 if __name__=="__main__":
+    os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-1.8.0-openjdk-amd64/jre"
+    os.environ["SPARK_HOME"] = "../venv-tweets/lib/python3.6/site-packages/pyspark/"
+    memory = '32g'
+    pyspark_submit_args = ' --driver-memory ' + memory + ' pyspark-shell'
+    os.environ["PYSPARK_SUBMIT_ARGS"] = pyspark_submit_args
     sc = pyspark.SparkContext()
     sqlCtx = SQLContext(sc)
     try:
