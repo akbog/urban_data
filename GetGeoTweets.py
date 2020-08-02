@@ -10,8 +10,10 @@ from pyspark.sql.functions import mean as _mean, stddev as _stddev, to_date as _
 from datetime import date, datetime
 
 
-def get_list(dir_path):
-    folders = [datetime.strptime(folder, "%Y_%m_%d") for folder in os.listdir(dir_path) if len(folder) == 10]
+def get_list(dir_path, output_path):
+    in_folders = {datetime.strptime(folder, "%Y_%m_%d") for folder in os.listdir(dir_path) if len(folder) == 10}
+    out_folders = {datetime.strptime(folder, "%Y_%m_%d") for folder in os.listdir(output_path)}
+    folders = list(in_folders - out_folders)
     folders.sort()
     return [os.path.join(dir_path, folder.strftime("%Y_%m_%d")) for folder in folders]
 
@@ -46,7 +48,7 @@ if __name__=="__main__":
             filter_users = False
     except:
         filter_users = True
-    dir_days = get_list(dir_path)
+    dir_days = get_list(dir_path, output_path)
     log_list = []
     running_total = 0
     for folder in dir_days:
