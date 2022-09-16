@@ -61,7 +61,7 @@ jupyter-console==6.1.0
 jupyter-core==4.6.3
 kiwisolver==1.2.0
 langdetect==1.0.8
-Mako==1.1.2
+Mako==1.2.2
 MarkupSafe==1.1.1
 matplotlib==3.2.1
 mistune==0.8.4
